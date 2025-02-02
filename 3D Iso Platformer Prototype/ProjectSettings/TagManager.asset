@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Interactable
+  - Door
+  - Mirror
+  - LightBeam
+  - Receiver
+  - LightSource
   layers:
   - Default
   - TransparentFX
