@@ -28,6 +28,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool LockInput = false;
     [SerializeField] private float horizontal;
     [SerializeField] private float vertical;
+
+
+   [SerializeField] private float interactionRange = 3f; // Distance to interact
+    public LayerMask interactableLayer; // Layer for interactable objects
+    [SerializeField] private LightEmitter currentEmitter;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -45,6 +51,14 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+
+        DetectInteractable();
+
+        if (currentEmitter != null && Input.GetKeyDown(KeyCode.F)) // Press 'F' to interact
+        {
+            currentEmitter.ToggleInteraction();
+        }
+
         CalculateInput();
         // Check if grounded using raycast
         GroundCheck();
@@ -148,6 +162,25 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
     #endregion
+
+    void DetectInteractable()
+    {
+        Ray ray = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, interactionRange, interactableLayer))
+        {
+            if (hit.collider.GetComponentInChildren<LightEmitter>())
+            {
+                currentEmitter = hit.collider.GetComponentInChildren<LightEmitter>();
+                Debug.Log("Press 'F' to interact with Laser Emitter.");
+            }
+        }
+        else
+        {
+            currentEmitter = null;
+        }
+    }
     private void OnDrawGizmos()
     {
         Vector3 origin = transform.position;
