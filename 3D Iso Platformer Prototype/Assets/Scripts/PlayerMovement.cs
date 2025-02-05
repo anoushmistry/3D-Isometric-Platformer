@@ -243,13 +243,13 @@ public static class HelpersCharacterController
 
     public static Vector3 ToIsometric(this Vector3 input)
     {
-        //return isoMatrix.MultiplyPoint3x4(input);
+        return isoMatrix.MultiplyPoint3x4(input);
 
 
         // Apply the isometric transformation to the X and Z axes while keeping Y unchanged
-        Vector3 iso = isoMatrix.MultiplyPoint3x4(new Vector3(input.x, 0, input.z)); // Only transform X and Z
-        iso.y = input.y; // Keep the original Y value unchanged
-        return iso;
+        //Vector3 iso = isoMatrix.MultiplyPoint3x4(new Vector3(input.x, 0, input.z)); // Only transform X and Z
+        //iso.y = input.y; // Keep the original Y value unchanged
+        //return iso;
     }
 }
 
