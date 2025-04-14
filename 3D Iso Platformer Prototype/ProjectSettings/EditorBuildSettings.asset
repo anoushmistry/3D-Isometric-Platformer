@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/LightingScene1.unity
     guid: 1323675214b89404c844f351433d95e0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LightingSceneGrad.unity
     guid: 2e1fdae2d7c9b4f4d8e9d4d7e4901424
+  - enabled: 1
+    path: Assets/Scenes/LightingSceneGrad 1.unity
+    guid: dab9830f2d09d6c44be9a3cf7814f218
   m_configObjects: {}
