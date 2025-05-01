@@ -45,7 +45,7 @@ public class LightBeam : MonoBehaviour
                 }
                 else if (hit.collider.CompareTag("Receiver"))
                 {
-                    hit.collider.GetComponent<LightReceiver>().ActivateReceiver();
+                    hit.collider.GetComponent<LightReceiver1>().ActivateReceiver();
                     break; // Stop reflecting
                 }
                 else
