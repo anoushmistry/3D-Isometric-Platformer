@@ -232,7 +232,7 @@ public class PlayerMovement : MonoBehaviour
         // then you can also multiply the push velocity by that.
 
         // Apply the push
-        body.velocity = pushDir * 5;
+        body.linearVelocity = pushDir * 5;
     }
 }
 
@@ -243,7 +243,7 @@ public static class HelpersCharacterController
 
     public static Vector3 ToIsometric(this Vector3 input)
     {
-        //return isoMatrix.MultiplyPoint3x4(input);
+        return isoMatrix.MultiplyPoint3x4(input);
 
 
         // Apply the isometric transformation to the X and Z axes while keeping Y unchanged
