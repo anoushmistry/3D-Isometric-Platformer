@@ -8,6 +8,7 @@ TagManager:
   - Mirror
   - LightReceiver
   - LightObject
+  - Room
   layers:
   - Default
   - TransparentFX
@@ -19,9 +20,9 @@ TagManager:
   - Interactable
   - Slope
   - Player
-  - 
-  - 
-  - 
+  - Room
+  - PlayerCamera
+  - PushableBox
   - 
   - 
   - 
@@ -54,3 +55,4 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
+  - Light Layer 8

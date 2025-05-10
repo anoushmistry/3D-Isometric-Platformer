@@ -1,47 +1,115 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Rigidbody _rb;
-    [SerializeField] private float _speed = 5;
-    [SerializeField] private float _turnSpeed = 360;
-    private Vector3 _input;
+    private GameObject player;
+    private MeshRenderer m_skin;
+    private Collider playerCollider;
+    [SerializeField] private Camera mainCam;
 
-    private void Update()
+    private const string RoomLayer = "Room";
+    private const string PlayerLayer = "Player";
+    private const string PlayerCameraLayer = "PlayerCamera";
+    private const string PushableBoxLayer = "PushableBox"; 
+
+    [SerializeField] private float fadeDuration = 1.0f;
+    private Coroutine fadeCoroutine;
+
+    public float interactDistance = 1f;
+    public KeyCode pushKey = KeyCode.E;
+    private PushableBox currentBox;
+
+    
+    private void Start()
     {
-        GatherInput();
-        Look();
+        m_skin = GetComponent<MeshRenderer>();
+        player = this.gameObject;
+        playerCollider = player.GetComponent<Collider>();
     }
 
-    private void FixedUpdate()
+    void Update()
     {
-        Move();
+        if (Input.GetKeyDown(pushKey))
+        {
+            if (currentBox == null)
+            {
+                Ray ray = new Ray(transform.position, transform.forward);
+                if (Physics.Raycast(ray, out RaycastHit hit, interactDistance,LayerMask.GetMask("PushableBox")))
+                {
+                    PushableBox box = hit.collider.GetComponent<PushableBox>();
+                    if (box != null)
+                    {
+                        box.StartPush(transform);
+                        currentBox = box;
+                    }
+                }
+            }
+            else
+            {
+                currentBox.StopPush();
+                currentBox = null;
+            }
+        }
     }
-
-    private void GatherInput()
+    private void OnTriggerStay(Collider other)
     {
-        _input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-    }
+        if (other.CompareTag("Room"))
+        {
+            Debug.Log("Entered a Room");
+            mainCam.cullingMask = LayerMask.GetMask(RoomLayer, PlayerLayer, PlayerCameraLayer, PushableBoxLayer);
+            mainCam.clearFlags = CameraClearFlags.SolidColor;
 
-    private void Look()
+            fadeCoroutine = StartCoroutine(FadeBackgroundColor(mainCam.backgroundColor, Color.black, fadeDuration));
+            //mainCam.backgroundColor = Color.black; // Set the background color to white
+            
+        }
+    }
+    private void OnTriggerExit(Collider other)
     {
-        if (_input == Vector3.zero) return;
-        var rot = Quaternion.LookRotation(_input.ToIso(), Vector3.up);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime * 100);
+        mainCam.clearFlags = CameraClearFlags.Skybox;
+        mainCam.cullingMask = ~(1 << LayerMask.NameToLayer(RoomLayer)); // Render all layers except "Room"
+        //mainCam.cullingMask = LayerMask.GetMask(EverythingLayer);
     }
-
-    private void Move()
+    private IEnumerator FadeBackgroundColor(Color fromColor, Color toColor, float duration)
     {
-        // Use _input.ToIso() directly to move instead of transform.forward
-        Vector3 moveDirection = _input.ToIso().normalized;
-        Debug.Log(moveDirection);
-        _rb.MovePosition(transform.position + moveDirection * _speed * Time.fixedDeltaTime);
-
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            mainCam.backgroundColor = Color.Lerp(fromColor, toColor, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        mainCam.backgroundColor = toColor; // Ensure exact value at end
     }
-}
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Vector3 origin = transform.position;
+        Vector3 direction = transform.forward * interactDistance;
+        Gizmos.DrawRay(origin, direction);
+    }
+    public void SetMaterialStencil()        //Changing the stencil
+    {
+        foreach (Material mat in m_skin.materials)
+        {
+            mat.SetFloat("_StencilRef", 1);
+            mat.SetFloat("_StencilComp", 4);
+            mat.SetFloat("_ShadowClipValue", 0.3f);
+        }
 
-public static class Helpers
-{
-    private static Matrix4x4 _isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0));
-    public static Vector3 ToIso(this Vector3 input) => _isoMatrix.MultiplyPoint3x4(input);
+        m_skin.shadowCastingMode = ShadowCastingMode.Off;
+    }
+    public void ResetMaterialStencil()      //Resetting the stencil
+    {
+        foreach (Material mat in m_skin.materials)
+        {
+            mat.SetFloat("_StencilRef", 0);
+            mat.SetFloat("_StencilComp", 8);
+            mat.SetFloat("_ShadowClipValue", 0.5f);
+        }
+    }
 }

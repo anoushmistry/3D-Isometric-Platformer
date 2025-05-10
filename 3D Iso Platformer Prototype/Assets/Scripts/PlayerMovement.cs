@@ -104,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentVelocity, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0, angle, 0);  // Smooth rotation
         }
+
     }
 
     private void GroundCheck()
@@ -239,7 +240,7 @@ public class PlayerMovement : MonoBehaviour
 // Helper class for isometric transformation
 public static class HelpersCharacterController
 {
-    private static Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0));
+    private static Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, 0));
 
     public static Vector3 ToIsometric(this Vector3 input)
     {

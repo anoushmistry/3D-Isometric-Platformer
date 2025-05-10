@@ -62,7 +62,7 @@ MonoBehaviour:
     Source: 1
     NormalSamples: 1
     Intensity: 3
-    DirectLightingStrength: 0.8
+    DirectLightingStrength: 0.25
     Radius: 0.1
     Samples: 0
     BlurQuality: 0
@@ -109,15 +109,15 @@ MonoBehaviour:
   - {fileID: -3432677362761225728}
   m_RendererFeatureMap: adc0de57c6d2eee5fa7f9dfe18e20c5d00aa172c20ae5cd0
   m_UseNativeRenderPass: 0
-  xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
+  xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 511
+    m_Bits: 15871
   m_TransparentLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8191
   m_DefaultStencilState:
     overrideStencilState: 0
     stencilReference: 0
