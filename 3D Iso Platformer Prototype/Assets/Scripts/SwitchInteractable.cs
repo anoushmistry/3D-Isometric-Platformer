@@ -23,19 +23,19 @@ public class SwitchInteractable : MonoBehaviour
 
     void Start()
     {
-        //player = Camera.main.transform; // Replace with your player reference if needed
         initialRotation = switchHandle.localRotation;
         targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
     }
 
     void Update()
     {
+        // Check if player is in range and the interact key is pressed
         if (playerInRange && Input.GetKeyDown(interactKey))
         {
             ToggleSwitch();
         }
 
-        // Smooth rotation
+        // Smooth rotation of the switch handle
         Quaternion goalRotation = isOn ? targetRotation : initialRotation;
         switchHandle.localRotation = Quaternion.Slerp(switchHandle.localRotation, goalRotation, Time.deltaTime * rotationSpeed);
     }
@@ -44,6 +44,7 @@ public class SwitchInteractable : MonoBehaviour
     {
         isOn = !isOn;
 
+        // Trigger events based on switch state
         if (isOn)
             OnSwitchActivated?.Invoke();
         else
