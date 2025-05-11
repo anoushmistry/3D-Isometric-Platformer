@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Vector3 origin = transform.position;
+        Vector3 origin = transform.position + new Vector3(0,1f,0);
         Vector3 direction = transform.forward * interactDistance;
         Gizmos.DrawRay(origin, direction);
     }

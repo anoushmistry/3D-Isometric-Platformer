@@ -77,18 +77,26 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetFloat("Speed", isoMoveDirection.magnitude);
         // Apply gravity
-        if (!isGrounded)
-        {
-            velocity.y += gravity * mass * Time.deltaTime;  // Apply gravity when not grounded
-        }
-        else if (velocity.y < 0)
-        {
+        //if (!isGrounded)
+        //{
+        //    velocity.y += gravity * mass * Time.deltaTime;  // Apply gravity when not grounded
+        //}
+        //else if (velocity.y < 0) 
+        //{
 
-            velocity.y = -2f;  // Small downward force to keep player grounded
+        //    velocity.y = -2f;  // Small downward force to keep player grounded
+        //}
+        if (controller.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; // Keeps player "stuck" to ground
+        }
+        else
+        {
+            velocity.y += gravity * mass * Time.deltaTime;
         }
 
         // Jump logic
-        if (isGrounded && Input.GetButtonDown("Jump"))
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             //velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);  // Jump force
             float jumpForce = Mathf.Sqrt(2 * jumpHeight * -gravity) * mass;
@@ -114,8 +122,8 @@ public class PlayerMovement : MonoBehaviour
     private void GroundCheck()
     {
         // Spherecast to check if the player is on the ground
-
-        isGrounded = Physics.SphereCast(transform.position + new Vector3(0,1f,0), sphereRadius, Vector3.down, out RaycastHit hit, castDistance, groundLayer);
+        isGrounded = controller.isGrounded;
+        //isGrounded = Physics.SphereCast(transform.position + new Vector3(0,1f,0), sphereRadius, Vector3.down, out RaycastHit hit, castDistance, groundLayer);
 
         // Debugging the hit result
         if (isGrounded)
@@ -170,7 +178,7 @@ public class PlayerMovement : MonoBehaviour
 
     void DetectInteractable()
     {
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(transform.position + new Vector3(0,1.5f,0) /* the pivot is the foot that's why*/, transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, interactionRange, interactableLayer))
