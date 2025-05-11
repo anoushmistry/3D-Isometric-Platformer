@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity;
     private float currentVelocity;
     private bool isGrounded;
+    private Animator animator;
     [SerializeField] private LayerMask groundLayer;
 
     [SerializeField] float sphereRadius = 0.5f;
@@ -30,24 +31,25 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float vertical;
 
 
-   [SerializeField] private float interactionRange = 3f; // Distance to interact
+    [SerializeField] private float interactionRange = 3f; // Distance to interact
     public LayerMask interactableLayer; // Layer for interactable objects
     [SerializeField] private LightEmitter currentEmitter;
 
     private void Start()
     {
+        animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
     }
 
     void CalculateInput()
     {
-        if(!LockInput)
+        if (!LockInput)
         {
-             horizontal = Input.GetAxisRaw("Horizontal");
-             vertical = Input.GetAxisRaw("Vertical");
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
         }
-        
+
 
     }
     void Update()
@@ -63,16 +65,17 @@ public class PlayerMovement : MonoBehaviour
         CalculateInput();
         // Check if grounded using raycast
         GroundCheck();
-       // SlopeCheck();
+        // SlopeCheck();
 
         // Handle player input for movement
-        
+
         // Calculate movement direction
         Vector3 inputDirection = new Vector3(horizontal, 0, vertical).normalized;
 
         // Convert to isometric space
         Vector3 isoMoveDirection = inputDirection.ToIsometric();
 
+        animator.SetFloat("Speed", isoMoveDirection.magnitude);
         // Apply gravity
         if (!isGrounded)
         {
@@ -80,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (velocity.y < 0)
         {
-     
+
             velocity.y = -2f;  // Small downward force to keep player grounded
         }
 
@@ -114,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
 
         isGrounded = Physics.SphereCast(transform.position + new Vector3(0,1f,0), sphereRadius, Vector3.down, out RaycastHit hit, castDistance, groundLayer);
 
-       // Debugging the hit result
+        // Debugging the hit result
         if (isGrounded)
             Debug.Log("Ground Detected: ");
         else
@@ -126,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
         float sphereCastoffsetY = controller.height / 2 - controller.radius;
         Vector3 castOrigin = transform.position - new Vector3(0, sphereCastoffsetY, 0);
-        if (Physics.SphereCast(castOrigin, sphereRadius - .02f, Vector3.down, out RaycastHit hit, castDistance, groundLayer,QueryTriggerInteraction.Ignore))
+        if (Physics.SphereCast(castOrigin, sphereRadius - .02f, Vector3.down, out RaycastHit hit, castDistance, groundLayer, QueryTriggerInteraction.Ignore))
         {
             // Get the angle between the surface normal and the up direction
             float angle = Vector3.Angle(hit.normal, Vector3.up);
@@ -143,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
 
                 LockInput = true;
                 Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
-                velocity = slideDirection * slideSpeed;  
+                velocity = slideDirection * slideSpeed;
             }
             else
             {
@@ -156,7 +159,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 // Reset velocity to zero when the slope is walkable
-               // velocity = Vector3.zero;
+                // velocity = Vector3.zero;
             }
         }
 
@@ -254,5 +257,4 @@ public static class HelpersCharacterController
         return iso;
     }
 }
-
 
