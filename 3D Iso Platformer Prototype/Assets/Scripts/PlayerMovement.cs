@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity;
     private float currentVelocity;
     private bool isGrounded;
+    private Animator animator;
     [SerializeField] private LayerMask groundLayer;
 
     [SerializeField] float sphereRadius = 0.5f;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
     }
@@ -73,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
         // Convert to isometric space
         Vector3 isoMoveDirection = inputDirection.ToIsometric();
 
+        animator.SetFloat("Speed", isoMoveDirection.magnitude);
         // Apply gravity
         if (!isGrounded)
         {
