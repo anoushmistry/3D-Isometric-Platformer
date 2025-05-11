@@ -217,3 +217,5 @@ Shader "Demo/Lit Stencil Reference"
             UsePass "Universal Render Pipeline/Lit/Meta"
         }
 }
+
+

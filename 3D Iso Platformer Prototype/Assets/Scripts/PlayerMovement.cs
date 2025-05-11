@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
     }
 
     void CalculateInput()
@@ -111,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // Spherecast to check if the player is on the ground
 
-        isGrounded = Physics.SphereCast(transform.position, sphereRadius, Vector3.down, out RaycastHit hit, castDistance, groundLayer);
+        isGrounded = Physics.SphereCast(transform.position + new Vector3(0,1f,0), sphereRadius, Vector3.down, out RaycastHit hit, castDistance, groundLayer);
 
        // Debugging the hit result
         if (isGrounded)
@@ -184,7 +185,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        Vector3 origin = transform.position;
+        Vector3 origin = transform.position + new Vector3(0,1f,0);
         Vector3 direction = Vector3.down;
         Vector3 endPoint = origin + direction * castDistance;
 

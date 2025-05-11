@@ -22,7 +22,7 @@ public class ShaderDoorController : MonoBehaviour
         if (Input.GetButtonDown("Submit"))
         {
             m_animator.SetTrigger(m_animIDOpen);
-            PlayerController.SetMaterialStencil();
+            //PlayerController.SetMaterialStencil();
         }
     }
 }

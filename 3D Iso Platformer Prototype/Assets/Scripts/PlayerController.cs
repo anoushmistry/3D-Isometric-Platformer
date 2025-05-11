@@ -96,12 +96,12 @@ public class PlayerController : MonoBehaviour
     {
         foreach (Material mat in m_skin.materials)
         {
-            mat.SetFloat("_StencilRef", 1);
-            mat.SetFloat("_StencilComp", 4);
-            mat.SetFloat("_ShadowClipValue", 0.3f);
+            //mat.SetFloat("_StencilRef", 1);
+            ///mat.SetFloat("_StencilComp", 4);
+           // mat.SetFloat("_ShadowClipValue", 0.3f);
         }
 
-        m_skin.shadowCastingMode = ShadowCastingMode.Off;
+        //m_skin.shadowCastingMode = ShadowCastingMode.Off;
     }
     public void ResetMaterialStencil()      //Resetting the stencil
     {

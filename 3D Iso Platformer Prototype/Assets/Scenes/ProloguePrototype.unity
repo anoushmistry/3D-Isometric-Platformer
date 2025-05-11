@@ -486,7 +486,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -12405,6 +12405,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorSetup
       objectReference: {fileID: 0}
+    - target: {fileID: 118682515597364698, guid: 5b6ae52ed60097a40af34d118cf9aa50,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8825761164345323712, guid: 5b6ae52ed60097a40af34d118cf9aa50,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -15909,6 +15914,16 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 1.349
       objectReference: {fileID: 0}
+    - target: {fileID: 3534666126029897936, guid: a791bfbdc05ca04419b127593749980a,
+        type: 3}
+      propertyPath: m_Lightmapping
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534666126029897936, guid: a791bfbdc05ca04419b127593749980a,
+        type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5683911414354378025, guid: a791bfbdc05ca04419b127593749980a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -15933,7 +15948,7 @@ PrefabInstance:
         type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 4d57d958328d50740884150335586aca, type: 2}
+      objectReference: {fileID: 2100000, guid: d1125d95f2c97aa40a0f05275f32b4fe, type: 2}
     - target: {fileID: 8396595967067235261, guid: a791bfbdc05ca04419b127593749980a,
         type: 3}
       propertyPath: interactableLayer.m_Bits
