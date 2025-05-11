@@ -4,6 +4,7 @@ public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionRange = 3f;
     private Interactable nearbyInteractable;
+    private GameObject heldOrb;  // Reference to the orb the player is holding
 
     private void Update()
     {
@@ -29,6 +30,22 @@ public class PlayerInteraction : MonoBehaviour
                 Debug.Log(interactable.promptMessage);
                 break;
             }
+        }
+    }
+
+    public void PickUpOrb(GameObject orb)
+    {
+        heldOrb = orb;
+        orb.SetActive(false);  // Disable the orb to simulate "picking it up"
+    }
+
+    public void PlaceOrb(Transform placementLocation)
+    {
+        if (heldOrb != null)
+        {
+            heldOrb.SetActive(true);  // Re-enable the orb when placing it
+            heldOrb.transform.position = placementLocation.position;
+            heldOrb = null;  // Release the orb after placing it
         }
     }
 
