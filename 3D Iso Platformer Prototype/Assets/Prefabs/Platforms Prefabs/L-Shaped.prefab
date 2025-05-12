@@ -106,8 +106,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.059708204, y: 0.00591485, z: 0.067802496}
-  m_Center: {x: 0, y: -0.0033598733, z: -0.0035327983}
+  m_Size: {x: 0.059708204, y: 0.00591485, z: 0.060633276}
+  m_Center: {x: 3.0510626e-17, y: -0.0033598733, z: 0.000051846506}
 --- !u!1 &3746558412269214257
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,6 +119,7 @@ GameObject:
   - component: {fileID: 3140041245787704206}
   - component: {fileID: 2010406036306033596}
   - component: {fileID: 5053069553729610893}
+  - component: {fileID: 4548519393928166978}
   m_Layer: 3
   m_Name: PM3D_Cube3D_3 (1)
   m_TagString: Untagged
@@ -194,6 +195,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4548519393928166978
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3746558412269214257}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.060805373, y: 0.027574949, z: 0.008706452}
+  m_Center: {x: -0.0002857279, y: 0.006429224, z: -0.033373956}
 --- !u!1 &5066816414262260440
 GameObject:
   m_ObjectHideFlags: 0
@@ -238,6 +260,7 @@ GameObject:
   - component: {fileID: 7779787936164906600}
   - component: {fileID: 644290745927711033}
   - component: {fileID: 4822942509256253275}
+  - component: {fileID: 1066620739567350556}
   m_Layer: 3
   m_Name: PM3D_Cube3D_3
   m_TagString: Untagged
@@ -313,6 +336,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1066620739567350556
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6354386599979014045}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.060805358, y: 0.028800106, z: 0.008706452}
+  m_Center: {x: -0.00028572796, y: 0.0070417975, z: -0.033373952}
 --- !u!1 &8588988199992291748
 GameObject:
   m_ObjectHideFlags: 0

@@ -75,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
         // Convert to isometric space
         Vector3 isoMoveDirection = inputDirection.ToIsometric();
 
+        if(animator != null)
         animator.SetFloat("Speed", isoMoveDirection.magnitude);
         // Apply gravity
         //if (!isGrounded)
@@ -252,7 +253,7 @@ public class PlayerMovement : MonoBehaviour
 // Helper class for isometric transformation
 public static class HelpersCharacterController
 {
-    private static Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 0, 0));
+    private static Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0));
 
     public static Vector3 ToIsometric(this Vector3 input)
     {

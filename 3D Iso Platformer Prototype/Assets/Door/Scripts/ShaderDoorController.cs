@@ -16,7 +16,7 @@ public class ShaderDoorController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("Submit"))
+        if (Input.GetKeyDown(KeyCode.E))        //For now
         {
             if (OrbPlacementManager.orbPlaced)  // Only open if orb is placed
             {
