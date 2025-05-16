@@ -2,13 +2,11 @@ using UnityEngine;
 
 public class ShaderDoorController : MonoBehaviour
 {
-    public PlayerController PlayerController;
-    public Transform m_hinge;
-
+    public PlayerInteraction playerInteraction; // Assign in Inspector
     private Animator m_animator;
     private int m_animIDOpen;
 
-    void Start()
+    private void Start()
     {
         m_animator = GetComponent<Animator>();
         m_animIDOpen = Animator.StringToHash("Open");
@@ -16,16 +14,16 @@ public class ShaderDoorController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))        //For now
+        if (Input.GetButtonDown("Submit"))
         {
-            if (OrbPlacementManager.orbPlaced)  // Only open if orb is placed
+            if (playerInteraction != null && playerInteraction.HasPlacedOrb())
             {
                 m_animator.SetTrigger(m_animIDOpen);
-                //PlayerController.SetMaterialStencil();
+                Debug.Log("Door Opened!");
             }
             else
             {
-                Debug.Log("You must place the Light Orb first to open the door!");
+                Debug.Log("Door Locked! Place the Orb first.");
             }
         }
     }

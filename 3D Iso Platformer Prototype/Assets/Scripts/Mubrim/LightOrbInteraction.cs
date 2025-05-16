@@ -1,20 +1,15 @@
 using UnityEngine;
 
-public class LightOrbInteractable : Interactable
+public class LightOrbInteraction : Interactable
 {
-    private PlayerInteraction playerInteraction;
-
-    private void Start()
-    {
-        playerInteraction = FindObjectOfType<PlayerInteraction>();  // Find the PlayerInteraction script
-    }
-
     public override void Interact()
     {
-        // Assuming the player can hold the orb
-        Debug.Log("Picked up the Light Orb!");
+        PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
 
-        // Call the PlayerInteraction's PickUpOrb method to pick up the orb
-        playerInteraction.PickUpOrb(this.gameObject);
+        if (playerInteraction != null)
+        {
+            playerInteraction.PickUpOrb(transform); // <<=== Correct: pass `transform`, not `gameObject`
+            Debug.Log("Light Orb Picked Up!");
+        }
     }
 }

@@ -3,8 +3,12 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionRange = 3f;
-    [SerializeField] private Interactable nearbyInteractable;
-    private GameObject heldOrb;  // Reference to the orb the player is holding
+    private Interactable nearbyInteractable;
+
+    private bool isHoldingOrb = false;
+    private Transform heldOrb;
+
+    private bool orbPlaced = false;
 
     private void Update()
     {
@@ -27,25 +31,8 @@ public class PlayerInteraction : MonoBehaviour
             if (interactable)
             {
                 nearbyInteractable = interactable;
-                Debug.Log(interactable.promptMessage);
                 break;
             }
-        }
-    }
-
-    public void PickUpOrb(GameObject orb)
-    {
-        heldOrb = orb;
-        orb.SetActive(false);  // Disable the orb to simulate "picking it up"
-    }
-
-    public void PlaceOrb(Transform placementLocation)
-    {
-        if (heldOrb != null)
-        {
-            heldOrb.SetActive(true);  // Re-enable the orb when placing it
-            heldOrb.transform.position = placementLocation.position;
-            heldOrb = null;  // Release the orb after placing it
         }
     }
 
@@ -53,5 +40,33 @@ public class PlayerInteraction : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
+    }
+
+    public void PickUpOrb(Transform orb)
+    {
+        if (!isHoldingOrb)
+        {
+            heldOrb = orb;
+            isHoldingOrb = true;
+            orb.gameObject.SetActive(false); // Hide orb when picked
+            Debug.Log("Picked up Light Orb!");
+        }
+    }
+
+    public void PlaceOrb(Vector3 position)
+    {
+        if (isHoldingOrb)
+        {
+            heldOrb.position = position;
+            heldOrb.gameObject.SetActive(true); // Show orb at destination
+            isHoldingOrb = false;
+            orbPlaced = true;
+            Debug.Log("Placed Light Orb at destination!");
+        }
+    }
+
+    public bool HasPlacedOrb()
+    {
+        return orbPlaced;
     }
 }
