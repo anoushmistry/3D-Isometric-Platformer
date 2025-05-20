@@ -2,8 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
-using DG.Tweening; // Add this only if using DOTween
+using DG.Tweening;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -18,29 +17,40 @@ public class DialogueManager : MonoBehaviour
     private Coroutine typingCoroutine;
 
     private bool isTyping;
+    private bool isDialogueActive;
+
+    private PlayerMovement playerMovement;
 
     private void Awake()
     {
         Instance = this;
         dialoguePanel.SetActive(false);
+        playerMovement = FindObjectOfType<PlayerMovement>();
     }
 
     public void StartDialogue(string[] lines)
     {
+        if (isDialogueActive) return;
+
         sentences = lines;
         currentIndex = 0;
+        isDialogueActive = true;
 
-        ShowPanel(); // Enable and animate panel
-        StartTyping();
+        // Lock player movement
+        if (playerMovement != null) playerMovement.enabled = false;
+
+        ShowPanelAndStartTyping();
     }
 
-    private void ShowPanel()
+    private void ShowPanelAndStartTyping()
     {
         dialoguePanel.SetActive(true);
-
-        // Reset scale and animate pop-in
         dialoguePanel.transform.localScale = Vector3.zero;
-        dialoguePanel.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack); // DOTween pop effect
+
+        // Animate pop-in and then begin typing
+        dialoguePanel.transform.DOScale(Vector3.one, 0.4f)
+            .SetEase(Ease.OutBack)
+            .OnComplete(() => StartTyping());
     }
 
     private void StartTyping()
@@ -62,9 +72,12 @@ public class DialogueManager : MonoBehaviour
 
         isTyping = false;
     }
+
     private void Update()
     {
-        if (dialoguePanel.activeSelf && Input.GetMouseButtonDown(0))
+        if (!isDialogueActive || !dialoguePanel.activeSelf) return;
+
+        if (Input.GetMouseButtonDown(0))
         {
             if (isTyping)
             {
@@ -81,15 +94,25 @@ public class DialogueManager : MonoBehaviour
                 }
                 else
                 {
-                    HidePanel();
+                    EndDialogue();
                 }
             }
         }
     }
 
-    private void HidePanel()
+    private void EndDialogue()
     {
-        dialoguePanel.transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack)
-            .OnComplete(() => dialoguePanel.SetActive(false));
+        dialoguePanel.transform.DOScale(Vector3.zero, 0.3f)
+            .SetEase(Ease.InBack)
+            .OnComplete(() =>
+            {
+                dialoguePanel.SetActive(false);
+                isDialogueActive = false;
+
+                // Unlock player movement
+                if (playerMovement != null) playerMovement.enabled = true;
+            });
     }
+
+    public bool IsDialogueActive() => isDialogueActive;
 }

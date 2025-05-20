@@ -4,9 +4,14 @@ using UnityEngine;
 public class DialogueTrigger : Interactable
 {
     public Dialogue dialogue; // Assign sentences in inspector
+    private bool hasInteracted = false;
 
     public override void Interact()
     {
+        if (hasInteracted || DialogueManager.Instance.IsDialogueActive())
+            return;
+
         DialogueManager.Instance.StartDialogue(dialogue.sentences);
+        hasInteracted = true;
     }
 }
