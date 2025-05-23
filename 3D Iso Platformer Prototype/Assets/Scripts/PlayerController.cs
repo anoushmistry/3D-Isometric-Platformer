@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,14 +17,18 @@ public class PlayerController : MonoBehaviour
     private const string PlayerCameraLayer = "PlayerCamera";
     private const string PushableBoxLayer = "PushableBox"; 
 
-    [SerializeField] private float fadeDuration = 1.0f;
+    
     private Coroutine fadeCoroutine;
 
     public float interactDistance = 1f;
     public KeyCode pushKey = KeyCode.E;
     private PushableBox currentBox;
 
-    
+    [Header("Room Interaction Settings")]
+    public Image fadeImage;
+    [SerializeField] private float fadeDuration = 1.0f;
+    private bool isFading = false;
+
     private void Start()
     {
         m_skin = GetComponent<MeshRenderer>();
@@ -55,7 +60,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Room"))
         {
@@ -63,27 +68,63 @@ public class PlayerController : MonoBehaviour
             mainCam.cullingMask = LayerMask.GetMask(RoomLayer, PlayerLayer, PlayerCameraLayer, PushableBoxLayer);
             mainCam.clearFlags = CameraClearFlags.SolidColor;
 
-            fadeCoroutine = StartCoroutine(FadeBackgroundColor(mainCam.backgroundColor, Color.black, fadeDuration));
+            StartCoroutine(FadeOutThenFadeIn(0.01f,0.2f));
+           
+            //fadeCoroutine = StartCoroutine(FadeBackgroundColor(mainCam.backgroundColor, Color.black, fadeDuration));
             //mainCam.backgroundColor = Color.black; // Set the background color to white
-            
+
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        mainCam.clearFlags = CameraClearFlags.Skybox;
-        mainCam.cullingMask = ~(1 << LayerMask.NameToLayer(RoomLayer)); // Render all layers except "Room"
-        //mainCam.cullingMask = LayerMask.GetMask(EverythingLayer);
-    }
-    private IEnumerator FadeBackgroundColor(Color fromColor, Color toColor, float duration)
-    {
-        float elapsed = 0f;
-        while (elapsed < duration)
+        if (other.CompareTag("Room"))
         {
-            mainCam.backgroundColor = Color.Lerp(fromColor, toColor, elapsed / duration);
+            StartCoroutine(FadeOutThenFadeIn(0.01f, 0.2f));
+
+
+            mainCam.clearFlags = CameraClearFlags.Skybox;
+            mainCam.cullingMask = ~(1 << LayerMask.NameToLayer(RoomLayer)); // Render all layers except "Room"
+            //mainCam.cullingMask = LayerMask.GetMask(EverythingLayer);
+        }
+
+    }
+    
+    public IEnumerator FadeIn(float time)
+    {
+        yield return Fade(1, 0, time);
+    }
+
+    public IEnumerator FadeOut(float time)
+    {
+        yield return Fade(0, 1,time);
+    }
+    public IEnumerator FadeOutThenFadeIn(float fadeOutTime, float fadeInTime)
+    {
+        yield return StartCoroutine(FadeOut(fadeOutTime));
+        yield return StartCoroutine(FadeIn(fadeInTime));
+    }
+
+    private IEnumerator Fade(float startAlpha, float endAlpha, float time)
+    {
+        if (isFading)
+            yield break;
+
+        isFading = true;
+        float elapsed = 0f;
+        Color color = fadeImage.color;
+
+        while (elapsed < time)
+        {
+            float alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / time);
+            fadeImage.color = new Color(color.r, color.g, color.b, alpha);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        mainCam.backgroundColor = toColor; // Ensure exact value at end
+
+        // Ensure final alpha
+        fadeImage.color = new Color(color.r, color.g, color.b, endAlpha);
+        isFading = false;
+
     }
     void OnDrawGizmos()
     {
