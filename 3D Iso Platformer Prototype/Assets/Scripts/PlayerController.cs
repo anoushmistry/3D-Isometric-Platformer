@@ -74,6 +74,10 @@ public class PlayerController : MonoBehaviour
             //mainCam.backgroundColor = Color.black; // Set the background color to white
 
         }
+        if(other.CompareTag("CameraChange"))
+        {
+            gameObject.GetComponent<PlayerMovement>().SetCameraAngle(0);
+        }
     }
     private void OnTriggerExit(Collider other)
     {

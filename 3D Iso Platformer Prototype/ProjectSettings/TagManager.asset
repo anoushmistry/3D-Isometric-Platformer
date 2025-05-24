@@ -9,6 +9,7 @@ TagManager:
   - LightReceiver
   - LightObject
   - Room
+  - CameraChange
   layers:
   - Default
   - TransparentFX

@@ -17,5 +17,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LightingSceneGrad 1.unity
     guid: dab9830f2d09d6c44be9a3cf7814f218
+  - enabled: 1
+    path: Assets/Scenes/Level 2 Prototype.unity
+    guid: bb14e1c11e50f82408b63b836552d82f
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

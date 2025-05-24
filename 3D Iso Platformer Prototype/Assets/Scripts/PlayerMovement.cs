@@ -1,3 +1,6 @@
+using System;
+using Cinemachine;
+using DG.Tweening;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -35,6 +38,18 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask interactableLayer; // Layer for interactable objects
     [SerializeField] private LightEmitter currentEmitter;
 
+    [Header("Isometric Movement Related Stuff")]
+    [SerializeField] private float isoTransformYValue;
+
+    [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
+
+
+    private void Awake()
+    {
+        if (cinemachineVirtualCamera != null)
+            isoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y; // Get the initial Y rotation of the camera
+    }
+
     private void Start()
     {
         animator = GetComponentInChildren<Animator>();
@@ -54,6 +69,10 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        if (cinemachineVirtualCamera != null)
+        {
+            isoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y;
+        }
 
         DetectInteractable();
 
@@ -73,10 +92,10 @@ public class PlayerMovement : MonoBehaviour
         Vector3 inputDirection = new Vector3(horizontal, 0, vertical).normalized;
 
         // Convert to isometric space
-        Vector3 isoMoveDirection = inputDirection.ToIsometric();
+        Vector3 isoMoveDirection = inputDirection.ToIsometric(isoTransformYValue);
 
-        if(animator != null)
-        animator.SetFloat("Speed", isoMoveDirection.magnitude);
+        if (animator != null)
+            animator.SetFloat("Speed", isoMoveDirection.magnitude);
         // Apply gravity
         //if (!isGrounded)
         //{
@@ -179,7 +198,7 @@ public class PlayerMovement : MonoBehaviour
 
     void DetectInteractable()
     {
-        Ray ray = new Ray(transform.position + new Vector3(0,1.5f,0) /* the pivot is the foot that's why*/, transform.forward);
+        Ray ray = new Ray(transform.position + new Vector3(0, 1.5f, 0) /* the pivot is the foot that's why*/, transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, interactionRange, interactableLayer))
@@ -197,7 +216,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        Vector3 origin = transform.position + new Vector3(0,1f,0);
+        Vector3 origin = transform.position + new Vector3(0, 1f, 0);
         Vector3 direction = Vector3.down;
         Vector3 endPoint = origin + direction * castDistance;
 
@@ -248,22 +267,40 @@ public class PlayerMovement : MonoBehaviour
         // Apply the push
         body.linearVelocity = pushDir * 5;
     }
+
+    public float getIsometricYValue()
+    {
+        return isoTransformYValue;
+    }
+
+    public void SetCameraAngle(float value)
+    {
+        Vector3 currentRotation = cinemachineVirtualCamera.transform.eulerAngles;
+        Vector3 targetRotation = new Vector3(currentRotation.x, value, currentRotation.z);
+        cinemachineVirtualCamera.transform.DORotate(targetRotation, 1f).SetEase(Ease.OutSine); // Adjust time/ease as needed
+    }
 }
 
 // Helper class for isometric transformation
 public static class HelpersCharacterController
 {
-    private static Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, 45, 0));
+    // static float yValue = PlayerMovement.getIsometricYValue();
+    // private static Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0,yValue,0));
 
-    public static Vector3 ToIsometric(this Vector3 input)
+    public static Vector3 ToIsometric(this Vector3 input, float yValue)
     {
+        Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, yValue, 0));
         return isoMatrix.MultiplyPoint3x4(input);
-
-
-        // Apply the isometric transformation to the X and Z axes while keeping Y unchanged
-        Vector3 iso = isoMatrix.MultiplyPoint3x4(new Vector3(input.x, 0, input.z)); // Only transform X and Z
-        iso.y = input.y; // Keep the original Y value unchanged
-        return iso;
     }
+    //public static Vector3 ToIsometric(this Vector3 input)
+    //{
+    //    return isoMatrix.MultiplyPoint3x4(input);
+
+
+    //    // Apply the isometric transformation to the X and Z axes while keeping Y unchanged
+    //    Vector3 iso = isoMatrix.MultiplyPoint3x4(new Vector3(input.x, 0, input.z)); // Only transform X and Z
+    //    iso.y = input.y; // Keep the original Y value unchanged
+    //    return iso;
+    //}
 }
 

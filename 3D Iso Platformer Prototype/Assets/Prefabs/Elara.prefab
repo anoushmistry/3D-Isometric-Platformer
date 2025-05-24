@@ -400,7 +400,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8635871663385735264}
   - component: {fileID: 5179169537618240253}
-  - component: {fileID: 4041814363931802413}
   - component: {fileID: 2721526815818192375}
   - component: {fileID: 4385046061997597708}
   - component: {fileID: 1342386154827322902}
@@ -456,29 +455,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!136 &4041814363931802413
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1974593544794826061}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.2
-  m_Height: 1.8
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!143 &2721526815818192375
 CharacterController:
   m_ObjectHideFlags: 0
@@ -517,9 +493,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCam: {fileID: 0}
-  fadeDuration: 1
   interactDistance: 1
   pushKey: 101
+  fadeImage: {fileID: 0}
+  fadeDuration: 1
 --- !u!114 &1342386154827322902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,7 +519,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   sphereRadius: 0.5
-  castDistance: 0.6
+  castDistance: 0.5
   slideSpeed: 0
   isSliding: 0
   slopeLimit: 0
