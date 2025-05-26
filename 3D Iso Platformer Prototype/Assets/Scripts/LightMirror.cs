@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class LightMirror : MonoBehaviour
+public class LightMirror : Interactable
 {
+    public float rotationSpeed;
     public void ReflectLaser(Vector3 hitPoint, Vector3 incomingDirection, LineRenderer lineRenderer)
     {
         Vector3 normal = transform.forward;
@@ -18,6 +19,18 @@ public class LightMirror : MonoBehaviour
             {
                 hit.collider.GetComponent<LightReceiver>().Activate();
             }
+        }
+    }
+
+    public override void Interact()
+    {
+        if (Input.GetKey(KeyCode.Q))
+        {
+            transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.E))
+        {
+            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
         }
     }
 }

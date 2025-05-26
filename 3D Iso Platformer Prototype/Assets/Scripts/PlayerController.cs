@@ -15,10 +15,11 @@ public class PlayerController : MonoBehaviour
     private const string RoomLayer = "Room";
     private const string PlayerLayer = "Player";
     private const string PlayerCameraLayer = "PlayerCamera";
-    private const string PushableBoxLayer = "PushableBox"; 
+    private const string PushableBoxLayer = "PushableBox";
 
-    
+
     private Coroutine fadeCoroutine;
+    private Coroutine delayCameraAngleChange;
 
     public float interactDistance = 1f;
     public KeyCode pushKey = KeyCode.E;
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour
             if (currentBox == null)
             {
                 Ray ray = new Ray(transform.position, transform.forward);
-                if (Physics.Raycast(ray, out RaycastHit hit, interactDistance,LayerMask.GetMask("PushableBox")))
+                if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, LayerMask.GetMask("PushableBox")))
                 {
                     PushableBox box = hit.collider.GetComponent<PushableBox>();
                     if (box != null)
@@ -64,35 +65,54 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Room"))
         {
+            StartCoroutine(FadeOutThenFadeIn(0.01f, 0.2f));
             Debug.Log("Entered a Room");
             mainCam.cullingMask = LayerMask.GetMask(RoomLayer, PlayerLayer, PlayerCameraLayer, PushableBoxLayer);
             mainCam.clearFlags = CameraClearFlags.SolidColor;
 
-            StartCoroutine(FadeOutThenFadeIn(0.01f,0.2f));
-           
+            
+
             //fadeCoroutine = StartCoroutine(FadeBackgroundColor(mainCam.backgroundColor, Color.black, fadeDuration));
             //mainCam.backgroundColor = Color.black; // Set the background color to white
 
         }
-        if(other.CompareTag("CameraChange"))
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("CameraChange"))
         {
             gameObject.GetComponent<PlayerMovement>().SetCameraAngle(0);
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Room"))
         {
-            StartCoroutine(FadeOutThenFadeIn(0.01f, 0.2f));
 
+            StartCoroutine(FadeOutThenFadeIn(0.01f, 0.2f));
 
             mainCam.clearFlags = CameraClearFlags.Skybox;
             mainCam.cullingMask = ~(1 << LayerMask.NameToLayer(RoomLayer)); // Render all layers except "Room"
             //mainCam.cullingMask = LayerMask.GetMask(EverythingLayer);
         }
+        if (other.CompareTag("CameraChange"))
+        {
+            if (delayCameraAngleChange == null)
+                delayCameraAngleChange = StartCoroutine(DelayCameraAngleChange(90));
+        }
 
     }
-    
+
+    private IEnumerator DelayCameraAngleChange(float angle)
+    {
+        int randomDuration = UnityEngine.Random.Range(2, 4);
+        yield return new WaitForSeconds(randomDuration);
+        gameObject.GetComponent<PlayerMovement>().SetCameraAngle(angle);
+
+        delayCameraAngleChange = null; // Reset the coroutine reference
+    }
     public IEnumerator FadeIn(float time)
     {
         yield return Fade(1, 0, time);
@@ -100,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator FadeOut(float time)
     {
-        yield return Fade(0, 1,time);
+        yield return Fade(0, 1, time);
     }
     public IEnumerator FadeOutThenFadeIn(float fadeOutTime, float fadeInTime)
     {
@@ -133,7 +153,7 @@ public class PlayerController : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Vector3 origin = transform.position + new Vector3(0,1f,0);
+        Vector3 origin = transform.position + new Vector3(0, 1f, 0);
         Vector3 direction = transform.forward * interactDistance;
         Gizmos.DrawRay(origin, direction);
     }

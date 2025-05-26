@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionRange = 3f;
-    private Interactable nearbyInteractable;
+    [SerializeField] private Interactable nearbyInteractable;
 
     private bool isHoldingOrb = false;
     private Transform heldOrb;
