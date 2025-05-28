@@ -1,36 +1,20 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+
 public class LightMirror : Interactable
 {
-    public float rotationSpeed;
-    public void ReflectLaser(Vector3 hitPoint, Vector3 incomingDirection, LineRenderer lineRenderer)
-    {
-        Vector3 normal = transform.forward;
-        Vector3 reflectedDirection = Vector3.Reflect(incomingDirection, normal);
-
-        RaycastHit hit;
-        if (Physics.Raycast(hitPoint, reflectedDirection, out hit, 50f))
-        {
-            lineRenderer.positionCount = 3; // Add a new point for reflection
-            lineRenderer.SetPosition(2, hit.point);
-                
-            if (hit.collider.CompareTag("LightReceiver"))
-            {
-                hit.collider.GetComponent<LightReceiver>().Activate();
-            }
-        }
-    }
+    public float rotationSpeed = 60f;
 
     public override void Interact()
     {
-        if (Input.GetKey(KeyCode.Q))
+        PlayerInteraction player = FindObjectOfType<PlayerInteraction>();
+        if (player != null)
         {
-            transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime);
+            player.EnterMirrorRotationMode(this);
         }
-        if (Input.GetKey(KeyCode.E))
-        {
-            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
-        }
+    }
+
+    public void RotateMirror(float direction)
+    {
+        transform.Rotate(Vector3.up, direction * rotationSpeed * Time.deltaTime);
     }
 }

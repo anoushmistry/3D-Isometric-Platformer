@@ -9215,6 +9215,16 @@ PrefabInstance:
       propertyPath: orbHolder
       value: 
       objectReference: {fileID: 2052533234}
+    - target: {fileID: 2998035629371578502, guid: 67789e0bf4fdd91408b93c9677d28b43,
+        type: 3}
+      propertyPath: spinSpeed
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998035629371578502, guid: 67789e0bf4fdd91408b93c9677d28b43,
+        type: 3}
+      propertyPath: playerMovement
+      value: 
+      objectReference: {fileID: 1857655097}
     - target: {fileID: 4385046061997597708, guid: 67789e0bf4fdd91408b93c9677d28b43,
         type: 3}
       propertyPath: mainCam
@@ -9295,6 +9305,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1836027897}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1857655097 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1342386154827322902, guid: 67789e0bf4fdd91408b93c9677d28b43,
+    type: 3}
+  m_PrefabInstance: {fileID: 1836027897}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21cd90867b61b3d43bf8fc9d00e83ce5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1912494805
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9307,6 +9329,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Mirror
+      objectReference: {fileID: 0}
+    - target: {fileID: 3616970420026988189, guid: f2fc3f8f81bbc984cb92f615e6b2daf6,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3616970420026988189, guid: f2fc3f8f81bbc984cb92f615e6b2daf6,
+        type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5834945266221192379, guid: f2fc3f8f81bbc984cb92f615e6b2daf6,
         type: 3}
