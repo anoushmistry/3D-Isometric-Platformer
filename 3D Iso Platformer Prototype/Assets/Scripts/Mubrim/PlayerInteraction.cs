@@ -3,12 +3,15 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionRange = 3f;
-    [SerializeField] private Interactable nearbyInteractable;
+    [SerializeField] private Transform orbHolder;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float spinSpeed = 90f;
 
+    private Interactable nearbyInteractable;
     private bool isHoldingOrb = false;
-    private Transform heldOrb;
-
+    private OrbPickupHandler heldOrb;
     private bool orbPlaced = false;
+    private bool isLerpingToHolder = false;
 
     private void Update()
     {
@@ -17,6 +20,27 @@ public class PlayerInteraction : MonoBehaviour
         if (nearbyInteractable != null && Input.GetKeyDown(KeyCode.E))
         {
             nearbyInteractable.Interact();
+        }
+
+        if (isLerpingToHolder && heldOrb != null)
+        {
+            heldOrb.transform.position = Vector3.Lerp(
+                heldOrb.transform.position,
+                orbHolder.position,
+                Time.deltaTime * moveSpeed
+            );
+
+            if (Vector3.Distance(heldOrb.transform.position, orbHolder.position) < 0.05f)
+            {
+                heldOrb.transform.position = orbHolder.position;
+                heldOrb.transform.SetParent(orbHolder);
+                isLerpingToHolder = false;
+            }
+        }
+
+        if (isHoldingOrb && heldOrb != null && !isLerpingToHolder)
+        {
+            heldOrb.transform.Rotate(Vector3.up * spinSpeed * Time.deltaTime, Space.Self);
         }
     }
 
@@ -42,25 +66,34 @@ public class PlayerInteraction : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 
-    public void PickUpOrb(Transform orb)
+    public void PickUpOrb(Transform orbTransform)
     {
         if (!isHoldingOrb)
         {
-            heldOrb = orb;
-            isHoldingOrb = true;
-            orb.gameObject.SetActive(false); // Hide orb when picked
-            Debug.Log("Picked up Light Orb!");
+            heldOrb = orbTransform.GetComponent<OrbPickupHandler>();
+            if (heldOrb != null)
+            {
+                heldOrb.transform.SetParent(null);
+                isHoldingOrb = true;
+                isLerpingToHolder = true;
+                Debug.Log("Picked up Light Orb!");
+            }
+            else
+            {
+                Debug.LogWarning("Orb does not have OrbPickupHandler!");
+            }
         }
     }
 
-    public void PlaceOrb(Vector3 position)
+    public void PlaceOrb(Vector3 destination)
     {
-        if (isHoldingOrb)
+        if (isHoldingOrb && heldOrb != null)
         {
-            heldOrb.position = position;
-            heldOrb.gameObject.SetActive(true); // Show orb at destination
+            heldOrb.transform.SetParent(null);
+            heldOrb.MoveToDestination(destination, moveSpeed);
             isHoldingOrb = false;
             orbPlaced = true;
+            heldOrb = null;
             Debug.Log("Placed Light Orb at destination!");
         }
     }
