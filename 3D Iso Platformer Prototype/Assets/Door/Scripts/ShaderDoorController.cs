@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ShaderDoorController : MonoBehaviour
 {
-    public PlayerInteraction playerInteraction; // Assign in Inspector
+    public PlayerInteraction playerInteraction; 
     private Animator m_animator;
     private int m_animIDOpen;
 

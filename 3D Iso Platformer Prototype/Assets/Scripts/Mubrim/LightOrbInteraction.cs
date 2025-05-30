@@ -8,7 +8,7 @@ public class LightOrbInteraction : Interactable
 
         if (playerInteraction != null)
         {
-            playerInteraction.PickUpOrb(transform); // <<=== Correct: pass `transform`, not `gameObject`
+            playerInteraction.PickUpOrb(transform); 
             Debug.Log("Light Orb Picked Up!");
         }
     }
