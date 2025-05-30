@@ -32,17 +32,11 @@ public class SwitchInteractable : Interactable
     {
         isOn = !isOn;
 
-        // Trigger events based on switch state
         if (isOn)
         {
             OnSwitchActivated?.Invoke();
             rotateCoroutine = StartCoroutine(RotateSwitch());
         }
-        //else
-        //    OnSwitchDeactivated?.Invoke();
-
-        
-
     }
 
     private IEnumerator RotateSwitch()

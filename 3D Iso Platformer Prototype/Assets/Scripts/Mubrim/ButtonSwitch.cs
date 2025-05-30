@@ -3,10 +3,10 @@ using DG.Tweening;
 
 public class ButtonSwitch : Interactable
 {
-    public PlatformController platformController;  // Reference to PlatformController
-    public bool isGroundSwitch;   // True if this switch is on ground, false if on platform
-    public Transform switchButton; // The button part of switch to animate press
-    public float pressDepth = 0.1f; // How far the button presses down
+    public PlatformController platformController;  
+    public bool isGroundSwitch;   
+    public Transform switchButton; 
+    public float pressDepth = 0.1f;
     public float pressDuration = 0.2f;
 
     private Vector3 originalButtonPosition;
@@ -18,12 +18,10 @@ public class ButtonSwitch : Interactable
 
     public override void Interact()
     {
-        // Play press animation
         AnimatePress();
 
         if (isGroundSwitch)
         {
-            // If platform is up, pressing ground switch moves it down
             if (platformController.IsPlatformUp())
             {
                 platformController.MovePlatformDown();
@@ -41,7 +39,6 @@ public class ButtonSwitch : Interactable
 
     private void AnimatePress()
     {
-        // Press button down and up using DOTween
         switchButton.DOLocalMoveY(originalButtonPosition.y - pressDepth, pressDuration / 2).SetEase(Ease.OutQuad).OnComplete(() =>
         {
             switchButton.DOLocalMoveY(originalButtonPosition.y, pressDuration / 2).SetEase(Ease.InQuad);

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DialogueTrigger : Interactable
 {
-    public Dialogue dialogue; // Assign sentences in inspector
+    public Dialogue dialogue; 
     private bool hasInteracted = false;
 
     public override void Interact()

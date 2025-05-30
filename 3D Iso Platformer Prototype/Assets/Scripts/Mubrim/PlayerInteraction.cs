@@ -9,6 +9,8 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private Transform orbHolder;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private PlayerMovement playerMovement;
+    public FloatingBridge bridgePopper; 
+
 
     private Interactable nearbyInteractable;
     private bool isHoldingOrb = false;
@@ -86,7 +88,7 @@ public class PlayerInteraction : MonoBehaviour
 
         if (isHoldingOrb && heldOrb != null && !isLerpingToHolder)
         {
-            heldOrb.transform.localRotation = Quaternion.identity; // prevent spinning
+            heldOrb.transform.localRotation = Quaternion.identity; // to prevent spinning
         }
 
         lastPosition = transform.position;
@@ -141,8 +143,12 @@ public class PlayerInteraction : MonoBehaviour
             orbPlaced = true;
             heldOrb = null;
             Debug.Log("Placed Light Orb at destination!");
+
+            if (bridgePopper != null)
+                bridgePopper.ActivateBridge();
         }
     }
+
 
     public void EnterMirrorRotationMode(LightMirror mirror)
     {

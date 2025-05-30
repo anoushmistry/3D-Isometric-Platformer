@@ -36,7 +36,6 @@ public class DialogueManager : MonoBehaviour
         currentIndex = 0;
         isDialogueActive = true;
 
-        // Lock player movement
         if (playerMovement != null) playerMovement.enabled = false;
 
         ShowPanelAndStartTyping();
@@ -47,7 +46,6 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(true);
         dialoguePanel.transform.localScale = Vector3.zero;
 
-        // Animate pop-in and then begin typing
         dialoguePanel.transform.DOScale(Vector3.one, 0.4f)
             .SetEase(Ease.OutBack)
             .OnComplete(() => StartTyping());
@@ -109,7 +107,6 @@ public class DialogueManager : MonoBehaviour
                 dialoguePanel.SetActive(false);
                 isDialogueActive = false;
 
-                // Unlock player movement
                 if (playerMovement != null) playerMovement.enabled = true;
             });
     }
