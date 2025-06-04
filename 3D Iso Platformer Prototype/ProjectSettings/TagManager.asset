@@ -10,6 +10,7 @@ TagManager:
   - LightObject
   - Room
   - CameraChange
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Room
   - PlayerCamera
   - PushableBox
-  - 
+  - Ladder
   - 
   - 
   - 

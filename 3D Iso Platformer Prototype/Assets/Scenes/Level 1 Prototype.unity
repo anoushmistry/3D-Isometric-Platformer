@@ -2541,7 +2541,7 @@ Transform:
   m_GameObject: {fileID: 64651364}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: -1.8532029, y: 8.5500145, z: -35.170006}
+  m_LocalPosition: {x: -1.7380892, y: 8.550014, z: -35.285122}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8232,7 +8232,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: -16.853203, y: 29.763218, z: -50.17001}
+  m_LocalPosition: {x: -16.73809, y: 29.763214, z: -50.285122}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10958,6 +10958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   promptMessage: Press E to interact
+  interactionPromptPrefab: {fileID: 0}
 --- !u!135 &415931630
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -25210,6 +25211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   promptMessage: Press E to interact
+  interactionPromptPrefab: {fileID: 0}
 --- !u!1001 &737993905
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52840,7 +52842,7 @@ PrefabInstance:
     - target: {fileID: 1189891629640899931, guid: b5d7dfbe9bffe214aa96d27b93ab7d5e,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 4235
+      value: 4238
       objectReference: {fileID: 0}
     - target: {fileID: 1430218499071947008, guid: b5d7dfbe9bffe214aa96d27b93ab7d5e,
         type: 3}
@@ -52865,7 +52867,7 @@ PrefabInstance:
     - target: {fileID: 3606841482570038261, guid: b5d7dfbe9bffe214aa96d27b93ab7d5e,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 2531
+      value: 2534
       objectReference: {fileID: 0}
     - target: {fileID: 4131597733452274058, guid: b5d7dfbe9bffe214aa96d27b93ab7d5e,
         type: 3}
@@ -59656,6 +59658,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   promptMessage: Press E to interact
+  interactionPromptPrefab: {fileID: 0}
+  dropDuration: 1
 --- !u!65 &1768336172
 BoxCollider:
   m_ObjectHideFlags: 0
