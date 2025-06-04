@@ -389,6 +389,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac099fb115c1da48a6a728fbd48ec54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptMessage: Press E to interact
+  interactionPromptPrefab: {fileID: 7838911746951984074, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+    type: 3}
   switchHandle: {fileID: 8875133203823752929}
   switchRotationAngle: {x: 0, y: 0, z: 90}
   rotationSpeed: 5

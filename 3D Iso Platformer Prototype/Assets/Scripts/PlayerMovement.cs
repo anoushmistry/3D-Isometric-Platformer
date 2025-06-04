@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody rb;
 
 
-    [SerializeField] private bool LockInput = false;
+    [SerializeField] public bool LockInput = false;
     [SerializeField] private float horizontal;
     [SerializeField] private float vertical;
 
