@@ -155,6 +155,10 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
     }
+    public bool IsHoldingOrb()
+    {
+        return isHoldingOrb;
+    }
 
     public void PlaceOrb(Vector3 destination)
     {
