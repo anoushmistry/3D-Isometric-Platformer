@@ -13,7 +13,8 @@ public abstract class Interactable : MonoBehaviour
     {
         if (interactionPromptPrefab != null && currentPromptInstance == null)
         {
-            currentPromptInstance = Instantiate(interactionPromptPrefab, transform.position + Vector3.up * 2f, Quaternion.identity);
+            Vector3 promptPos = GetComponent<Collider>().bounds.center + Vector3.up * 3f;
+            currentPromptInstance = Instantiate(interactionPromptPrefab, promptPos, Quaternion.identity);
         }
     }
 

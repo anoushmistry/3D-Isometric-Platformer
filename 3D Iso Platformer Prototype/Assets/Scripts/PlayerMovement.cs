@@ -72,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
         {
             CalculateInput();
             HandleMovement();
-            DetectLadderPrompt();
+            //DetectLadderPrompt();
         }
         else
         {
@@ -122,9 +122,9 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = controller.isGrounded;
     }
 
-    void DetectLadderPrompt()
+    /*void DetectLadderPrompt()
     {
-        Ray ray = new Ray(transform.position + Vector3.up, transform.forward);
+        Ray ray = new Ray(transform.position + Vector3.up * 0.5f, transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, 1f, ladderLayer))
         {
             if (!promptShown && hit.transform.TryGetComponent(out Interactable interactable))
@@ -138,6 +138,7 @@ public class PlayerMovement : MonoBehaviour
             if (promptShown && Input.GetKeyDown(KeyCode.E))
             {
                 currentLadderPrompt?.HidePrompt();
+                currentLadderPrompt = null;
                 promptShown = false;
                 StickToLadder(currentLadder);
             }
@@ -151,9 +152,9 @@ public class PlayerMovement : MonoBehaviour
                 currentLadderPrompt = null;
             }
         }
-    }
+    }*/
 
-    void StickToLadder(Transform ladder)
+    public void StickToLadder(Transform ladder)
     {
         isOnLadder = true;
         isClimbing = true;
@@ -161,11 +162,15 @@ public class PlayerMovement : MonoBehaviour
         velocity = Vector3.zero;
 
         controller.enabled = false;
-        Vector3 snapPosition = new Vector3(ladder.position.x, transform.position.y, ladder.position.z);
+        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.5f); // offset to stay in front
+        snapPosition.y = transform.position.y;
         transform.position = snapPosition;
         transform.rotation = Quaternion.LookRotation(-ladder.forward);
         controller.enabled = true;
+
+        currentLadder = ladder;
     }
+
 
     void HandleLadderClimbInput()
     {

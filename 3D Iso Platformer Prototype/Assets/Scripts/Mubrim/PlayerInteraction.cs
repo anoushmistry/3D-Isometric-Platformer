@@ -66,6 +66,11 @@ public class PlayerInteraction : MonoBehaviour
 
         if (nearbyInteractable != null && Input.GetKeyDown(KeyCode.E))
         {
+            if (currentPrompt != null)
+            {
+                Destroy(currentPrompt);
+                currentPrompt = null;
+            }
             nearbyInteractable.Interact();
         }
 
