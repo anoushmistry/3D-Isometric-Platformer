@@ -25,6 +25,9 @@ public class PlayerInteraction : MonoBehaviour
     private float mirrorRotationCooldown = 0f;
     private const float enterRotationDelay = 0.2f;
 
+    [SerializeField] private GameObject interactPromptPrefab;
+    private GameObject currentPrompt;
+
     private void Awake()
     {
         if (playerMovement == null)
@@ -63,6 +66,11 @@ public class PlayerInteraction : MonoBehaviour
 
         if (nearbyInteractable != null && Input.GetKeyDown(KeyCode.E))
         {
+            if (currentPrompt != null)
+            {
+                Destroy(currentPrompt);
+                currentPrompt = null;
+            }
             nearbyInteractable.Interact();
         }
 
@@ -102,13 +110,33 @@ public class PlayerInteraction : MonoBehaviour
         foreach (var collider in colliders)
         {
             Interactable interactable = collider.GetComponent<Interactable>();
-            if (interactable)
+            if (interactable && interactable.IsInteractable())
             {
                 nearbyInteractable = interactable;
-                break;
+
+                if (currentPrompt == null && interactPromptPrefab != null)
+                {
+                    currentPrompt = Instantiate(interactPromptPrefab);
+                }
+
+                if (currentPrompt != null)
+                {
+                    currentPrompt.SetActive(true);
+                    currentPrompt.transform.position = collider.transform.position + Vector3.up * 2f;
+                    currentPrompt.transform.forward = Camera.main.transform.forward;
+                }
+
+                return;
             }
         }
+
+        if (currentPrompt != null)
+        {
+            currentPrompt.SetActive(false);
+        }
     }
+
+
 
     public void PickUpOrb(Transform orbTransform)
     {
@@ -131,6 +159,10 @@ public class PlayerInteraction : MonoBehaviour
                 Debug.LogWarning("Orb does not have OrbPickupHandler!");
             }
         }
+    }
+    public bool IsHoldingOrb()
+    {
+        return isHoldingOrb;
     }
 
     public void PlaceOrb(Vector3 destination)

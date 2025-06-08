@@ -532,6 +532,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   currentEmitter: {fileID: 0}
+  isoTransformYValue: 0
+  cinemachineVirtualCamera: {fileID: 0}
 --- !u!114 &2257248010633788217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -559,6 +561,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionRange: 3
+  orbHolder: {fileID: 0}
+  moveSpeed: 5
+  playerMovement: {fileID: 1342386154827322902}
+  bridgePopper: {fileID: 0}
+  interactPromptPrefab: {fileID: 7838911746951984074, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+    type: 3}
 --- !u!54 &5559228694809096933
 Rigidbody:
   m_ObjectHideFlags: 0

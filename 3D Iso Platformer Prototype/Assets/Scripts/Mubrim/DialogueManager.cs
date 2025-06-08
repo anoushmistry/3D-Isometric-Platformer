@@ -1,4 +1,5 @@
 //Handles the display, typing effect, advancing through lines, and UI updates.
+using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -20,6 +21,7 @@ public class DialogueManager : MonoBehaviour
     private bool isDialogueActive;
 
     private PlayerMovement playerMovement;
+    private Action onDialogueCompleteCallback; // NEW
 
     private void Awake()
     {
@@ -28,13 +30,14 @@ public class DialogueManager : MonoBehaviour
         playerMovement = FindObjectOfType<PlayerMovement>();
     }
 
-    public void StartDialogue(string[] lines)
+    public void StartDialogue(string[] lines, Action onComplete = null)
     {
         if (isDialogueActive) return;
 
         sentences = lines;
         currentIndex = 0;
         isDialogueActive = true;
+        onDialogueCompleteCallback = onComplete;
 
         if (playerMovement != null) playerMovement.enabled = false;
 
@@ -108,6 +111,9 @@ public class DialogueManager : MonoBehaviour
                 isDialogueActive = false;
 
                 if (playerMovement != null) playerMovement.enabled = true;
+
+                onDialogueCompleteCallback?.Invoke(); // <- callback executed here
+                onDialogueCompleteCallback = null;
             });
     }
 

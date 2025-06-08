@@ -54,44 +54,4 @@ public class SwitchInteractable : Interactable
 
         switchHandle.localRotation = goalRotation; // Ensure final alignment
     }
-
-    //void Update()
-    //{
-    //    // Check if player is in range and the interact key is pressed
-    //    if (playerInRange && Input.GetKeyDown(interactKey))
-    //    {
-    //        ToggleSwitch();
-    //    }
-
-    //    // Smooth rotation of the switch handle
-    //    Quaternion goalRotation = isOn ? targetRotation : initialRotation;
-    //    switchHandle.localRotation = Quaternion.Slerp(switchHandle.localRotation, goalRotation, Time.deltaTime * rotationSpeed);
-    //}
-
-    //void ToggleSwitch()
-    //{
-    //    isOn = !isOn;
-
-    //    // Trigger events based on switch state
-    //    if (isOn)
-    //        OnSwitchActivated?.Invoke();
-    //    else
-    //        OnSwitchDeactivated?.Invoke();
-    //}
-
-    //void OnTriggerStay(Collider other)
-    //{
-    //    if (other.CompareTag("Player"))
-    //    {
-    //        playerInRange = true;
-    //    }
-    //}
-
-    //void OnTriggerExit(Collider other)
-    //{
-    //    if (other.CompareTag("Player"))
-    //    {
-    //        playerInRange = false;
-    //    }
-    //}
 }

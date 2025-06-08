@@ -1,10 +1,7 @@
-using System;
+﻿using System;
 using Cinemachine;
 using DG.Tweening;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEngine.UI.Image;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -28,26 +25,35 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slopeLimit;
     [SerializeField] private Rigidbody rb;
 
-
-    [SerializeField] private bool LockInput = false;
+    [SerializeField] public bool LockInput = false;
     [SerializeField] private float horizontal;
     [SerializeField] private float vertical;
 
-
-    [SerializeField] private float interactionRange = 3f; // Distance to interact
-    public LayerMask interactableLayer; // Layer for interactable objects
+    [Header("Interaction")]
+    [SerializeField] private float interactionRange = 3f;
+    public LayerMask interactableLayer;
     [SerializeField] private LightEmitter currentEmitter;
 
-    [Header("Isometric Movement Related Stuff")]
+    [Header("Isometric Movement")]
     [SerializeField] private float isoTransformYValue;
-
     [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
 
+    [Header("Ladder Settings")]
+    public Transform ladderTop;
+    public Transform ladderBottom;
+    public float climbSpeed = 3f;
+    public LayerMask ladderLayer;
+    private bool isOnLadder = false;
+    private bool isClimbing = false;
+    private Transform currentLadder;
+    private bool promptShown = false;
+
+    private Interactable currentLadderPrompt;
 
     private void Awake()
     {
         if (cinemachineVirtualCamera != null)
-            isoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y; // Get the initial Y rotation of the camera
+            isoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y;
     }
 
     private void Start()
@@ -57,6 +63,23 @@ public class PlayerMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
+    void Update()
+    {
+        if (cinemachineVirtualCamera != null)
+            isoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y;
+
+        if (!isOnLadder)
+        {
+            CalculateInput();
+            HandleMovement();
+            //DetectLadderPrompt();
+        }
+        else
+        {
+            HandleLadderClimbInput();
+        }
+    }
+
     void CalculateInput()
     {
         if (!LockInput)
@@ -64,243 +87,137 @@ public class PlayerMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
         }
-
-
     }
-    void Update()
+
+    void HandleMovement()
     {
-        if (cinemachineVirtualCamera != null)
-        {
-            isoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y;
-        }
-
-        DetectInteractable();
-
-        if (currentEmitter != null && Input.GetKeyDown(KeyCode.F)) // Press 'F' to interact
-        {
-            currentEmitter.ToggleInteraction();
-        }
-
-        CalculateInput();
-        // Check if grounded using raycast
         GroundCheck();
-        // SlopeCheck();
-
-        // Handle player input for movement
-
-        // Calculate movement direction
         Vector3 inputDirection = new Vector3(horizontal, 0, vertical).normalized;
-
-        // Convert to isometric space
         Vector3 isoMoveDirection = inputDirection.ToIsometric(isoTransformYValue);
 
         if (animator != null)
             animator.SetFloat("Speed", isoMoveDirection.magnitude);
-        // Apply gravity
-        //if (!isGrounded)
-        //{
-        //    velocity.y += gravity * mass * Time.deltaTime;  // Apply gravity when not grounded
-        //}
-        //else if (velocity.y < 0) 
-        //{
 
-        //    velocity.y = -2f;  // Small downward force to keep player grounded
-        //}
         if (controller.isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f; // Keeps player "stuck" to ground
-        }
+            velocity.y = -2f;
         else
-        {
             velocity.y += gravity * mass * Time.deltaTime;
-        }
 
-        // Jump logic
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            //velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);  // Jump force
-            float jumpForce = Mathf.Sqrt(2 * jumpHeight * -gravity) * mass;
-            velocity.y += jumpForce;
-        }
+            velocity.y += Mathf.Sqrt(2 * jumpHeight * -gravity) * mass;
 
-        // Calculate final movement
         Vector3 movement = isoMoveDirection * speed * Time.deltaTime;
-
-        // Apply horizontal movement and vertical velocity to controller
         controller.Move(movement + velocity * Time.deltaTime);
 
-        // Handle rotation if there's movement
         if (isoMoveDirection.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(isoMoveDirection.x, isoMoveDirection.z) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentVelocity, rotationSmoothTime);
-            transform.rotation = Quaternion.Euler(0, angle, 0);  // Smooth rotation
+            transform.rotation = Quaternion.Euler(0, angle, 0);
         }
-
     }
 
-    private void GroundCheck()
+    void GroundCheck()
     {
-        // Spherecast to check if the player is on the ground
         isGrounded = controller.isGrounded;
-        //isGrounded = Physics.SphereCast(transform.position + new Vector3(0,1f,0), sphereRadius, Vector3.down, out RaycastHit hit, castDistance, groundLayer);
-
-        // Debugging the hit result
-        if (isGrounded)
-            Debug.Log("Ground Detected: ");
-        else
-            Debug.Log("Not Grounded");
     }
-    #region SlopeCheck
-    void SlopeCheck()
+
+    /*void DetectLadderPrompt()
     {
-
-        float sphereCastoffsetY = controller.height / 2 - controller.radius;
-        Vector3 castOrigin = transform.position - new Vector3(0, sphereCastoffsetY, 0);
-        if (Physics.SphereCast(castOrigin, sphereRadius - .02f, Vector3.down, out RaycastHit hit, castDistance, groundLayer, QueryTriggerInteraction.Ignore))
+        Ray ray = new Ray(transform.position + Vector3.up * 0.5f, transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, 1f, ladderLayer))
         {
-            // Get the angle between the surface normal and the up direction
-            float angle = Vector3.Angle(hit.normal, Vector3.up);
-            Debug.Log($"Surface angle: {angle}");
-            Debug.DrawLine(hit.point, hit.point + hit.normal, Color.magenta, 3f);
-            // If the surface angle is greater than the slope limit, initiate sliding
-            if (angle > slopeLimit)
+            if (!promptShown && hit.transform.TryGetComponent(out Interactable interactable))
             {
-                if (!isSliding)
-                {
-                    isSliding = true;
-                    Debug.Log("Sliding initiated!");
-                }
-
-                LockInput = true;
-                Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
-                velocity = slideDirection * slideSpeed;
+                currentLadder = hit.transform;
+                currentLadderPrompt = interactable;
+                interactable.ShowPrompt();
+                promptShown = true;
             }
-            else
+
+            if (promptShown && Input.GetKeyDown(KeyCode.E))
             {
-                if (isSliding)
-                {
-                    LockInput = false;
-                    isSliding = false;
-                    Debug.Log("Sliding stopped!");
-                    velocity = new Vector3(0, 0, 0);
-                }
-
-                // Reset velocity to zero when the slope is walkable
-                // velocity = Vector3.zero;
-            }
-        }
-
-        // Apply the velocity to move the character
-        controller.Move(velocity * Time.deltaTime);
-    }
-    #endregion
-
-    void DetectInteractable()
-    {
-        Ray ray = new Ray(transform.position + new Vector3(0, 1.5f, 0) /* the pivot is the foot that's why*/, transform.forward);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, interactionRange, interactableLayer))
-        {
-            if (hit.collider.GetComponentInChildren<LightEmitter>())
-            {
-                currentEmitter = hit.collider.GetComponentInChildren<LightEmitter>();
-                Debug.Log("Press 'F' to interact with Laser Emitter.");
+                currentLadderPrompt?.HidePrompt();
+                currentLadderPrompt = null;
+                promptShown = false;
+                StickToLadder(currentLadder);
             }
         }
         else
         {
-            currentEmitter = null;
+            if (promptShown)
+            {
+                currentLadderPrompt?.HidePrompt();
+                promptShown = false;
+                currentLadderPrompt = null;
+            }
         }
-    }
-    private void OnDrawGizmos()
+    }*/
+
+    public void StickToLadder(Transform ladder)
     {
-        Vector3 origin = transform.position + new Vector3(0, 1f, 0);
-        Vector3 direction = Vector3.down;
-        Vector3 endPoint = origin + direction * castDistance;
+        isOnLadder = true;
+        isClimbing = true;
+        LockInput = true;
+        velocity = Vector3.zero;
 
-        // Color based on detection
-        Gizmos.color = isGrounded ? Color.green : Color.red;
+        controller.enabled = false;
+        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.5f); // offset to stay in front
+        snapPosition.y = transform.position.y;
+        transform.position = snapPosition;
+        transform.rotation = Quaternion.LookRotation(-ladder.forward);
+        controller.enabled = true;
 
-        // Draw the line representing the cast direction
-        Gizmos.DrawLine(origin, endPoint);
-
-        // Draw the starting sphere
-        Gizmos.DrawWireSphere(origin, sphereRadius);
-
-        // Perform a SphereCast to update hit.point in real-time
-        if (Physics.SphereCast(origin, sphereRadius, direction, out RaycastHit debugHit, castDistance, groundLayer))
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(debugHit.point, sphereRadius);
-        }
-        else
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(endPoint, sphereRadius);
-        }
+        currentLadder = ladder;
     }
-    void OnControllerColliderHit(ControllerColliderHit hit)
+
+
+    void HandleLadderClimbInput()
     {
-        Rigidbody body = hit.collider.attachedRigidbody;
+        float verticalInput = Input.GetAxisRaw("Vertical");
+        Vector3 climbDirection = new Vector3(0, verticalInput * climbSpeed, 0);
+        controller.Move(climbDirection * Time.deltaTime);
 
-        // no rigidbody
-        if (body == null || body.isKinematic)
+        animator?.SetFloat("Speed", Mathf.Abs(verticalInput));
+
+        if (transform.position.y >= ladderTop.position.y - 0.1f && verticalInput > 0)
         {
-            return;
+            ExitLadder(new Vector3(transform.position.x, ladderTop.position.y, transform.position.z));
         }
-
-        // We dont want to push objects below us
-        if (hit.moveDirection.y < -0.3)
+        else if (transform.position.y <= ladderBottom.position.y + 0.1f && verticalInput < 0)
         {
-            return;
+            ExitLadder(new Vector3(transform.position.x, ladderBottom.position.y, transform.position.z));
         }
-
-        // Calculate push direction from move direction,
-        // we only push objects to the sides never up and down
-        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-
-        // If you know how fast your character is trying to move,
-        // then you can also multiply the push velocity by that.
-
-        // Apply the push
-        body.linearVelocity = pushDir * 5;
     }
 
-    public float getIsometricYValue()
+    void ExitLadder(Vector3 exitPosition)
     {
-        return isoTransformYValue;
+        isOnLadder = false;
+        isClimbing = false;
+        LockInput = false;
+
+        controller.enabled = false;
+        transform.position = exitPosition;
+        controller.enabled = true;
+
+        velocity.y = -1f; // reapply slight gravity to trigger grounded
     }
+
+    public float getIsometricYValue() => isoTransformYValue;
 
     public void SetCameraAngle(float value)
     {
         Vector3 currentRotation = cinemachineVirtualCamera.transform.eulerAngles;
         Vector3 targetRotation = new Vector3(currentRotation.x, value, currentRotation.z);
-        cinemachineVirtualCamera.transform.DORotate(targetRotation, 1f).SetEase(Ease.OutSine); // Adjust time/ease as needed
+        cinemachineVirtualCamera.transform.DORotate(targetRotation, 1f).SetEase(Ease.OutSine);
     }
 }
 
-// Helper class for isometric transformation
 public static class HelpersCharacterController
 {
-    // static float yValue = PlayerMovement.getIsometricYValue();
-    // private static Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0,yValue,0));
-
     public static Vector3 ToIsometric(this Vector3 input, float yValue)
     {
         Matrix4x4 isoMatrix = Matrix4x4.Rotate(Quaternion.Euler(0, yValue, 0));
         return isoMatrix.MultiplyPoint3x4(input);
     }
-    //public static Vector3 ToIsometric(this Vector3 input)
-    //{
-    //    return isoMatrix.MultiplyPoint3x4(input);
-
-
-    //    // Apply the isometric transformation to the X and Z axes while keeping Y unchanged
-    //    Vector3 iso = isoMatrix.MultiplyPoint3x4(new Vector3(input.x, 0, input.z)); // Only transform X and Z
-    //    iso.y = input.y; // Keep the original Y value unchanged
-    //    return iso;
-    //}
 }
-

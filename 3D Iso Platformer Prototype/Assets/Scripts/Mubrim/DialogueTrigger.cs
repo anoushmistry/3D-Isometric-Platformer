@@ -1,9 +1,8 @@
-//Tells the system when to start a conversation.
 using UnityEngine;
 
 public class DialogueTrigger : Interactable
 {
-    public Dialogue dialogue; 
+    public Dialogue dialogue;
     private bool hasInteracted = false;
 
     public override void Interact()
@@ -11,7 +10,23 @@ public class DialogueTrigger : Interactable
         if (hasInteracted || DialogueManager.Instance.IsDialogueActive())
             return;
 
-        DialogueManager.Instance.StartDialogue(dialogue.sentences);
+        DialogueManager.Instance.StartDialogue(dialogue.sentences, OnDialogueFinished);
+    }
+
+    private void OnDialogueFinished()
+    {
         hasInteracted = true;
+        HidePrompt();
+    }
+
+    public override void ShowPrompt()
+    {
+        if (hasInteracted) return;
+        base.ShowPrompt();
+    }
+
+    public override bool IsInteractable()
+    {
+        return !hasInteracted;
     }
 }

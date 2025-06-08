@@ -2,12 +2,40 @@ using UnityEngine;
 
 public class DestinationInteractable : Interactable
 {
+    private bool isOrbPlaced = false;
+
+    private PlayerInteraction playerInteraction;
+
+    private void Start()
+    {
+        playerInteraction = FindObjectOfType<PlayerInteraction>();
+    }
+
     public override void Interact()
     {
-        PlayerInteraction playerInteraction = FindObjectOfType<PlayerInteraction>();
-        if (playerInteraction != null)
+        if (isOrbPlaced || playerInteraction == null || !playerInteraction.IsHoldingOrb()) return;
+
+        playerInteraction.PlaceOrb(transform.position);
+        isOrbPlaced = true;
+
+        HidePrompt(); // Hide E prompt after placing orb
+    }
+
+    public override bool IsInteractable()
+    {
+        return !isOrbPlaced && playerInteraction != null && playerInteraction.IsHoldingOrb();
+    }
+
+    public override void ShowPrompt()
+    {
+        if (IsInteractable())
         {
-            playerInteraction.PlaceOrb(transform.position);
+            base.ShowPrompt(); // Only show prompt when player is holding orb
         }
+    }
+
+    public override void HidePrompt()
+    {
+        base.HidePrompt(); // Cleanly destroys the prompt
     }
 }
