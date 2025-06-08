@@ -106,7 +106,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         nearbyInteractable = null;
 
-        Collider[] colliders = Physics.OverlapSphere(transform.position, interactionRange);
+        Collider[] colliders = Physics.OverlapSphere(transform.position + new Vector3(0f,1f,0f), interactionRange);
         foreach (var collider in colliders)
         {
             Interactable interactable = collider.GetComponent<Interactable>();
@@ -214,6 +214,6 @@ public class PlayerInteraction : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, interactionRange);
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0f, 1f, 0f), interactionRange);
     }
 }

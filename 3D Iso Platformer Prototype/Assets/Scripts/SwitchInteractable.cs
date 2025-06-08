@@ -18,7 +18,7 @@ public class SwitchInteractable : Interactable
 
     private bool isOn = false;
     private bool playerInRange = false;
-    [SerializeField] private Transform player;
+   // [SerializeField] private Transform player;
     private Quaternion initialRotation;
     private Quaternion targetRotation;
     private Coroutine rotateCoroutine;
@@ -35,6 +35,11 @@ public class SwitchInteractable : Interactable
         if (isOn)
         {
             OnSwitchActivated?.Invoke();
+            rotateCoroutine = StartCoroutine(RotateSwitch());
+        }
+        else
+        {
+            OnSwitchDeactivated?.Invoke();
             rotateCoroutine = StartCoroutine(RotateSwitch());
         }
     }

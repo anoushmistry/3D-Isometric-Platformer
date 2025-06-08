@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    public static PlayerMovement Instance;
+
+    [Header("Player Movement Settings")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private CharacterController controller;
     [SerializeField] private float gravity = -9.81f;
@@ -17,14 +21,18 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Sphere Cast Settings (For Ground Check)")]
     [SerializeField] float sphereRadius = 0.5f;
     [SerializeField] float castDistance = 0.55f;
 
+    [Header("Sliding Settings (Currently Not in Use)")]
     [SerializeField] private float slideSpeed;
     [SerializeField] private bool isSliding;
     [SerializeField] private float slopeLimit;
     [SerializeField] private Rigidbody rb;
 
+
+    [Header("Movement Settings")]
     [SerializeField] public bool LockInput = false;
     [SerializeField] private float horizontal;
     [SerializeField] private float vertical;
@@ -32,11 +40,17 @@ public class PlayerMovement : MonoBehaviour
     [Header("Interaction")]
     [SerializeField] private float interactionRange = 3f;
     public LayerMask interactableLayer;
+
+    [Header("Light Emitter Settings")]
     [SerializeField] private LightEmitter currentEmitter;
 
-    [Header("Isometric Movement")]
+    [Header("Isometric Movement (Camera Settings)")]
+    [Tooltip("The start value of the cinemachine camera angle. This is helpful for switching back to the original Camera angle after an angle change")]
+    public float startIsoTransformYValue;
+    [Tooltip("The Y rotation of the camera in isometric view. Adjust this to match your camera's angle.")]
     [SerializeField] private float isoTransformYValue;
-    [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
+    [Tooltip("Cinemachine Virtual Camera for isometric view")]
+    [SerializeField] public CinemachineVirtualCamera cinemachineVirtualCamera;
 
     [Header("Ladder Settings")]
     public Transform ladderTop;
@@ -52,8 +66,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance)
+        {
+            Destroy(Instance);
+            Instance = this;
+        }
+        else
+        {
+            Instance = this;
+        }
         if (cinemachineVirtualCamera != null)
+        {
             isoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y;
+            startIsoTransformYValue = cinemachineVirtualCamera.transform.eulerAngles.y;
+        }
     }
 
     private void Start()
@@ -164,11 +190,14 @@ public class PlayerMovement : MonoBehaviour
         controller.enabled = false;
         Vector3 snapPosition = ladder.position + (-ladder.forward * -0.5f); // offset to stay in front
         snapPosition.y = transform.position.y;
+        //snapPosition.y = ladderBottom.position.y;
         transform.position = snapPosition;
         transform.rotation = Quaternion.LookRotation(-ladder.forward);
         controller.enabled = true;
 
         currentLadder = ladder;
+        animator?.SetBool("isClimbing", true);  // Plays Ladder climb animation
+        animator?.SetInteger("ClimbingSpeed", 0);  // Plays Ladder idle animation
     }
 
 
@@ -178,7 +207,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 climbDirection = new Vector3(0, verticalInput * climbSpeed, 0);
         controller.Move(climbDirection * Time.deltaTime);
 
-        animator?.SetFloat("Speed", Mathf.Abs(verticalInput));
+        //   animator?.SetFloat("Speed", Mathf.Abs(verticalInput));
+
+        animator?.SetInteger("ClimbingSpeed", (int)verticalInput);
 
         if (transform.position.y >= ladderTop.position.y - 0.1f && verticalInput > 0)
         {
@@ -192,6 +223,8 @@ public class PlayerMovement : MonoBehaviour
 
     void ExitLadder(Vector3 exitPosition)
     {
+        animator?.SetBool("isClimbing", false);
+        animator?.SetInteger("ClimbingSpeed", 0);
         isOnLadder = false;
         isClimbing = false;
         LockInput = false;
@@ -201,16 +234,12 @@ public class PlayerMovement : MonoBehaviour
         controller.enabled = true;
 
         velocity.y = -1f; // reapply slight gravity to trigger grounded
+
     }
 
     public float getIsometricYValue() => isoTransformYValue;
 
-    public void SetCameraAngle(float value)
-    {
-        Vector3 currentRotation = cinemachineVirtualCamera.transform.eulerAngles;
-        Vector3 targetRotation = new Vector3(currentRotation.x, value, currentRotation.z);
-        cinemachineVirtualCamera.transform.DORotate(targetRotation, 1f).SetEase(Ease.OutSine);
-    }
+    
 }
 
 public static class HelpersCharacterController

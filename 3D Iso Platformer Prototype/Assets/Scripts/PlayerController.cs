@@ -1,17 +1,21 @@
+using Cinemachine;
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    private GameObject player;
+    //private GameObject player;
     private MeshRenderer m_skin;
-    private Collider playerCollider;
+    //private Collider playerCollider;
     [SerializeField] private Camera mainCam;
 
+    [Header("Layer Settings")]
     private const string RoomLayer = "Room";
     private const string PlayerLayer = "Player";
     private const string PlayerCameraLayer = "PlayerCamera";
@@ -21,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine fadeCoroutine;
     private Coroutine delayCameraAngleChange;
 
+    [Header("Interaction Settings")]
     public float interactDistance = 1f;
     public KeyCode pushKey = KeyCode.E;
     private PushableBox currentBox;
@@ -33,8 +38,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         m_skin = GetComponent<MeshRenderer>();
-        player = this.gameObject;
-        playerCollider = player.GetComponent<Collider>();
+        //player = this.gameObject;
+        //playerCollider = player.GetComponent<Collider>();
     }
 
     void Update()
@@ -76,14 +81,20 @@ public class PlayerController : MonoBehaviour
             //mainCam.backgroundColor = Color.black; // Set the background color to white
 
         }
+        if (other.CompareTag("CameraChange"))
+        {
+            float cameraChangeAngle = other.GetComponent<CameraAngleChangeComponent>().GetCameraAngleChangeValue();
+            SetCameraAngle(cameraChangeAngle);
+        }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("CameraChange"))
-        {
-            gameObject.GetComponent<PlayerMovement>().SetCameraAngle(0);
-        }
+        //if (other.CompareTag("CameraChange"))
+        //{
+            
+        //    gameObject.GetComponent<PlayerMovement>().SetCameraAngle(0);
+        //}
     }
 
     private void OnTriggerExit(Collider other)
@@ -99,20 +110,36 @@ public class PlayerController : MonoBehaviour
         }
         if (other.CompareTag("CameraChange"))
         {
-            if (delayCameraAngleChange == null)
-                delayCameraAngleChange = StartCoroutine(DelayCameraAngleChange(90));
+          if(delayCameraAngleChange == null)
+                delayCameraAngleChange = StartCoroutine(DelayCameraAngleChange(PlayerMovement.Instance.startIsoTransformYValue,2f));
         }
 
     }
 
-    private IEnumerator DelayCameraAngleChange(float angle)
+    //private IEnumerator DelayCameraAngleChange(float angle)
+    //{
+    //    // int randomDuration = UnityEngine.Random.Range(2, 4);
+    //    // yield return new WaitForSeconds(randomDuration);
+    //    // yield return new WaitForSeconds(1f);
+    //    gameObject.GetComponent<PlayerMovement>().SetCameraAngle(angle);
+    //    delayCameraAngleChange = null; // Reset the coroutine reference
+    //    yield return new WaitForEndOfFrame();
+    //}
+    private IEnumerator DelayCameraAngleChange(float angle,float delay)
     {
-        int randomDuration = UnityEngine.Random.Range(2, 4);
-        yield return new WaitForSeconds(randomDuration);
-        gameObject.GetComponent<PlayerMovement>().SetCameraAngle(angle);
+        yield return new WaitForSeconds(delay);
+        Debug.Log("DelayCameraAngleChange started");
 
-        delayCameraAngleChange = null; // Reset the coroutine reference
+       // gameObject.GetComponent<PlayerMovement>().SetCameraAngle(angle);
+       SetCameraAngle(angle);
+
+        Debug.Log("SetCameraAngle called");
+
+        delayCameraAngleChange = null;
+        Debug.Log("Coroutine reference set to null");
+        yield break;
     }
+
     public IEnumerator FadeIn(float time)
     {
         yield return Fade(1, 0, time);
@@ -176,5 +203,11 @@ public class PlayerController : MonoBehaviour
             mat.SetFloat("_StencilComp", 8);
             mat.SetFloat("_ShadowClipValue", 0.5f);
         }
+    }
+    public void SetCameraAngle(float value)
+    {
+        Vector3 currentRotation = PlayerMovement.Instance.cinemachineVirtualCamera.transform.eulerAngles;
+        Vector3 targetRotation = new Vector3(currentRotation.x, value, currentRotation.z);
+        PlayerMovement.Instance.cinemachineVirtualCamera.transform.DORotate(targetRotation, 3f).SetEase(Ease.OutSine);
     }
 }
