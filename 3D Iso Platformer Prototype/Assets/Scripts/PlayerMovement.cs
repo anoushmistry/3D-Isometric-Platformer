@@ -56,7 +56,6 @@ public class PlayerMovement : MonoBehaviour
     public Transform ladderTop;
     public Transform ladderBottom;
     public float climbSpeed = 3f;
-    public LayerMask ladderLayer;
     private bool isOnLadder = false;
     private bool isClimbing = false;
     private Transform currentLadder;
@@ -188,8 +187,8 @@ public class PlayerMovement : MonoBehaviour
         velocity = Vector3.zero;
 
         controller.enabled = false;
-        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.5f); // offset to stay in front
-        snapPosition.y = transform.position.y;
+        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.75f) + (-ladder.right * 0.75f); // offset to stay in front
+        snapPosition.y = transform.position.y; // 1f cause pivot is foot;
         //snapPosition.y = ladderBottom.position.y;
         transform.position = snapPosition;
         transform.rotation = Quaternion.LookRotation(-ladder.forward);
@@ -211,7 +210,7 @@ public class PlayerMovement : MonoBehaviour
 
         animator?.SetInteger("ClimbingSpeed", (int)verticalInput);
 
-        if (transform.position.y >= ladderTop.position.y - 0.1f && verticalInput > 0)
+        if (transform.position.y >= ladderTop.position.y - 0.5f && verticalInput > 0)
         {
             ExitLadder(new Vector3(transform.position.x, ladderTop.position.y, transform.position.z));
         }

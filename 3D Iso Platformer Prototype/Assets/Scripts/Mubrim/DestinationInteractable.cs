@@ -6,6 +6,7 @@ public class DestinationInteractable : Interactable
 
     private PlayerInteraction playerInteraction;
 
+    [SerializeField] private Vector3 offset;
     private void Start()
     {
         playerInteraction = FindObjectOfType<PlayerInteraction>();
@@ -15,7 +16,7 @@ public class DestinationInteractable : Interactable
     {
         if (isOrbPlaced || playerInteraction == null || !playerInteraction.IsHoldingOrb()) return;
 
-        playerInteraction.PlaceOrb(transform.position);
+        playerInteraction.PlaceOrb(transform.position + offset);
         isOrbPlaced = true;
 
         HidePrompt(); // Hide E prompt after placing orb

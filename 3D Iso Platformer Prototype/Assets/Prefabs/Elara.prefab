@@ -406,7 +406,6 @@ GameObject:
   - component: {fileID: 2257248010633788217}
   - component: {fileID: 2998035629371578502}
   - component: {fileID: 5559228694809096933}
-  - component: {fileID: 3381697131189533330}
   m_Layer: 9
   m_Name: Elara
   m_TagString: Player
@@ -444,7 +443,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1974593544794826061}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 414ff417d77a00c40aa003adab00b8c0, type: 3}
   m_Controller: {fileID: 9100000, guid: 07581adcf6d598546aa105a59516b290, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -534,8 +533,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   currentEmitter: {fileID: 0}
+  startIsoTransformYValue: 0
   isoTransformYValue: 0
   cinemachineVirtualCamera: {fileID: 0}
+  ladderTop: {fileID: 0}
+  ladderBottom: {fileID: 0}
+  climbSpeed: 3
 --- !u!114 &2257248010633788217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,18 +599,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3381697131189533330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1974593544794826061}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d003069f20ff464d8a2b73d81b13b62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2032752351710601376
 GameObject:
   m_ObjectHideFlags: 0
