@@ -184,26 +184,6 @@ public class PlayerController : MonoBehaviour
         Vector3 direction = transform.forward * interactDistance;
         Gizmos.DrawRay(origin, direction);
     }
-    public void SetMaterialStencil()        //Changing the stencil
-    {
-        foreach (Material mat in m_skin.materials)
-        {
-            //mat.SetFloat("_StencilRef", 1);
-            ///mat.SetFloat("_StencilComp", 4);
-           // mat.SetFloat("_ShadowClipValue", 0.3f);
-        }
-
-        //m_skin.shadowCastingMode = ShadowCastingMode.Off;
-    }
-    public void ResetMaterialStencil()      //Resetting the stencil
-    {
-        foreach (Material mat in m_skin.materials)
-        {
-            mat.SetFloat("_StencilRef", 0);
-            mat.SetFloat("_StencilComp", 8);
-            mat.SetFloat("_ShadowClipValue", 0.5f);
-        }
-    }
     public void SetCameraAngle(float value)
     {
         Vector3 currentRotation = PlayerMovement.Instance.cinemachineVirtualCamera.transform.eulerAngles;

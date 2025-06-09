@@ -23,29 +23,38 @@ public class SwitchInteractable : Interactable
     private Quaternion targetRotation;
     private Coroutine rotateCoroutine;
 
+    private bool isInInteractable { get; set; }
+
     void Start()
     {
         initialRotation = switchHandle.localRotation;
         targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
+        isInInteractable = true;
     }
     public override void Interact()
     {
-        isOn = !isOn;
+        if(isInInteractable)
+        {
+            isOn = !isOn;
 
-        if (isOn)
-        {
-            OnSwitchActivated?.Invoke();
-            rotateCoroutine = StartCoroutine(RotateSwitch());
+            StartCoroutine(RotateSwitch());
+            //if (isOn)
+            //{
+            //    rotateCoroutine = StartCoroutine(RotateSwitch());
+            //    OnSwitchActivated?.Invoke();
+            //}
+            //else
+            //{
+            //    rotateCoroutine = StartCoroutine(RotateSwitch());
+            //    OnSwitchDeactivated?.Invoke();
+            //}
         }
-        else
-        {
-            OnSwitchDeactivated?.Invoke();
-            rotateCoroutine = StartCoroutine(RotateSwitch());
-        }
+
     }
 
     private IEnumerator RotateSwitch()
     {
+        isInInteractable = false; // Prevent further interactions during rotation
         Quaternion startRotation = switchHandle.localRotation;
         Quaternion goalRotation = isOn ? targetRotation : initialRotation;
         float t = 0f;
@@ -58,5 +67,17 @@ public class SwitchInteractable : Interactable
         }
 
         switchHandle.localRotation = goalRotation; // Ensure final alignment
+        if (isOn)
+        {
+            OnSwitchActivated?.Invoke();
+        }
+        else
+        {
+            OnSwitchDeactivated?.Invoke();
+        }
+    }
+    public void SetInteractable(bool value)
+    {
+        isInInteractable = value;
     }
 }
