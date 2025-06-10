@@ -52758,7 +52758,7 @@ GameObject:
   - component: {fileID: 1450901376}
   - component: {fileID: 1450901377}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Cube 1
   m_TagString: Respawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55164,7 +55164,7 @@ GameObject:
   - component: {fileID: 1534673091}
   - component: {fileID: 1534673092}
   m_Layer: 0
-  m_Name: Cube (2)
+  m_Name: Cube 2
   m_TagString: Respawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

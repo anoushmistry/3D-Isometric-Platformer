@@ -37,7 +37,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        m_skin = GetComponent<MeshRenderer>();
        // fadeImage = SceneController.Instance.fadeImageBlack;
         //player = this.gameObject;
         //playerCollider = player.GetComponent<Collider>();

@@ -16,5 +16,6 @@ public class LightMirror : Interactable
     public void RotateMirror(float direction)
     {
         transform.Rotate(Vector3.up, direction * rotationSpeed * Time.deltaTime);
+        Debug.Log($"Rotating mirror {direction * rotationSpeed * Time.deltaTime} degrees");
     }
 }
