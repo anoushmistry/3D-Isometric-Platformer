@@ -94,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
         lastGroundedPosition = transform.position;
         animator.stabilizeFeet = true;
-        fadeImageBlack = SceneController.Instance.fadeImageBlack;
+        //fadeImageBlack = SceneController.Instance.fadeImageBlack;
     }
 
     void Update()

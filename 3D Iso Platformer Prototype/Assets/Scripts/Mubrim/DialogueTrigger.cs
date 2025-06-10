@@ -7,10 +7,10 @@ public class DialogueTrigger : Interactable
 
     public override void Interact()
     {
-        if (hasInteracted || SceneController.Instance.DialogueManager.IsDialogueActive())
+        if (hasInteracted || DialogueManager.Instance.IsDialogueActive())
             return;
 
-       SceneController.Instance.DialogueManager.StartDialogue(dialogue.sentences, OnDialogueFinished);
+       DialogueManager.Instance.StartDialogue(dialogue.sentences, OnDialogueFinished);
     }
 
     private void OnDialogueFinished()

@@ -41,10 +41,10 @@ public class NPCBehaviour : MonoBehaviour
         idleKickCoroutine = StartCoroutine(PlayRandomKickIdle());
         if (dialogueTrigger != null)
         {
-            // Subscribe to dialogue events
-            SceneController.Instance.DialogueManager.OnDialogueStart += OnDialogueStart;
-            SceneController.Instance.DialogueManager.OnDialogueEnd += OnDialogueEnd;
-            SceneController.Instance.DialogueManager.OnSentenceChanged += OnSentenceChanged;
+            // Subscribe to dialogue events 
+            DialogueManager.Instance.OnDialogueStart += OnDialogueStart;
+            DialogueManager.Instance.OnDialogueEnd += OnDialogueEnd;
+            DialogueManager.Instance.OnSentenceChanged += OnSentenceChanged;
         }
 
     }
@@ -102,11 +102,11 @@ public class NPCBehaviour : MonoBehaviour
     private void OnDestroy()
     {
         // Clean up event subscription
-        if (SceneController.Instance.DialogueManager != null)
+        if (DialogueManager.Instance != null)
         {
-            SceneController.Instance.DialogueManager.OnDialogueStart -= OnDialogueStart;
-            SceneController.Instance.DialogueManager.OnDialogueEnd -= OnDialogueEnd;
-            SceneController.Instance.DialogueManager.OnSentenceChanged -= OnSentenceChanged;
+            DialogueManager.Instance.OnDialogueStart -= OnDialogueStart;
+            DialogueManager.Instance.OnDialogueEnd -= OnDialogueEnd;
+            DialogueManager.Instance.OnSentenceChanged -= OnSentenceChanged;
         }
         if (idleKickCoroutine != null)
             StopCoroutine(idleKickCoroutine);

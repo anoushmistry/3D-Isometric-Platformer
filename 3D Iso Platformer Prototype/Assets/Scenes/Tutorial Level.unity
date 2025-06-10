@@ -3347,45 +3347,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Scene Controller & UI
       objectReference: {fileID: 0}
-    - target: {fileID: 8691630276859913531, guid: 247c543371748fd4d9ecae9e04d0fa6e,
-        type: 3}
-      propertyPath: fadeImageBlack
-      value: 
-      objectReference: {fileID: 515875026}
-    - target: {fileID: 8691630276859913531, guid: 247c543371748fd4d9ecae9e04d0fa6e,
-        type: 3}
-      propertyPath: DialogueManager
-      value: 
-      objectReference: {fileID: 515875025}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 247c543371748fd4d9ecae9e04d0fa6e, type: 3}
---- !u!114 &515875025 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7048627873416247445, guid: 247c543371748fd4d9ecae9e04d0fa6e,
-    type: 3}
-  m_PrefabInstance: {fileID: 515875024}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f361b9f86363cd4fa777649373c5528, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &515875026 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 510545827848774179, guid: 247c543371748fd4d9ecae9e04d0fa6e,
-    type: 3}
-  m_PrefabInstance: {fileID: 515875024}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &557935196
 PrefabInstance:
   m_ObjectHideFlags: 0

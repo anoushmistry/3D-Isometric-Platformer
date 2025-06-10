@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
-    //public static DialogueManager Instance;
+    public static DialogueManager Instance;
 
     [SerializeField] public GameObject dialoguePanel;
     [SerializeField] public TextMeshProUGUI dialogueText;
@@ -30,7 +30,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
-     //   Instance = this;
+        Instance = this;
         dialoguePanel.SetActive(false);
         playerMovement = FindObjectOfType<PlayerMovement>();
     }
