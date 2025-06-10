@@ -52561,8 +52561,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8d3d687c6aab654e8a2106381d5db9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptMessage: Press E to interact
+  interactionPromptPrefab: {fileID: 0}
   playerInteraction: {fileID: 0}
   sceneToLoad: 
+  isDestinationDoor: 0
 --- !u!65 &1414153875
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -67288,12 +67291,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 8e8d6489352af4344bb15f8780998000,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 28.6
+      value: 27.901
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8e8d6489352af4344bb15f8780998000,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.02
+      value: -0.848
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8e8d6489352af4344bb15f8780998000,
         type: 3}
@@ -75062,8 +75065,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8d3d687c6aab654e8a2106381d5db9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptMessage: Press E to interact
+  interactionPromptPrefab: {fileID: 0}
   playerInteraction: {fileID: 1836027901}
   sceneToLoad: Level 2 Prototype
+  isDestinationDoor: 0
 --- !u!1001 &2098815040
 PrefabInstance:
   m_ObjectHideFlags: 0

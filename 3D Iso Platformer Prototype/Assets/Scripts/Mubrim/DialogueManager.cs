@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -23,6 +24,10 @@ public class DialogueManager : MonoBehaviour
     private PlayerMovement playerMovement;
     private Action onDialogueCompleteCallback; // NEW
 
+    public Action OnDialogueStart, OnDialogueEnd;
+    public Action<int> OnSentenceChanged;
+
+
     private void Awake()
     {
         Instance = this;
@@ -39,6 +44,8 @@ public class DialogueManager : MonoBehaviour
         isDialogueActive = true;
         onDialogueCompleteCallback = onComplete;
 
+        OnDialogueStart?.Invoke();
+        OnSentenceChanged?.Invoke(currentIndex);
         if (playerMovement != null) playerMovement.enabled = false;
 
         ShowPanelAndStartTyping();
@@ -91,6 +98,7 @@ public class DialogueManager : MonoBehaviour
                 currentIndex++;
                 if (currentIndex < sentences.Length)
                 {
+                    OnSentenceChanged?.Invoke(currentIndex);
                     StartTyping();
                 }
                 else
@@ -114,6 +122,7 @@ public class DialogueManager : MonoBehaviour
 
                 onDialogueCompleteCallback?.Invoke(); // <- callback executed here
                 onDialogueCompleteCallback = null;
+                OnDialogueEnd?.Invoke();
             });
     }
 
