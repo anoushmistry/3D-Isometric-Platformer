@@ -8,8 +8,7 @@ public class SceneController : MonoBehaviour
     public static SceneController Instance;
 
     [Header("Fade Settings")]
-    public Image fadeImage;
-    public Image fadeImageBlack;
+    public Image fadeImageWhite;
     [SerializeField] private float fadeDuration = 1f;
 
     private bool isFading = false;
@@ -23,7 +22,7 @@ public class SceneController : MonoBehaviour
         }
 
         Instance = this;
-       // DontDestroyOnLoad(fadeImage.transform.parent.gameObject);
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public void LoadScene(string sceneName)
@@ -52,10 +51,10 @@ public class SceneController : MonoBehaviour
 
     private IEnumerator Fade(float targetAlpha)
     {
-        if (fadeImage == null) yield break;
+        if (fadeImageWhite == null) yield break;
 
-        fadeImage.raycastTarget = true;
-        Color color = fadeImage.color;
+        fadeImageWhite.raycastTarget = true;
+        Color color = fadeImageWhite.color;
         float startAlpha = color.a;
         float timer = 0f;
 
@@ -63,14 +62,14 @@ public class SceneController : MonoBehaviour
         {
             float t = timer / fadeDuration;
             color.a = Mathf.Lerp(startAlpha, targetAlpha, t);
-            fadeImage.color = color;
+            fadeImageWhite.color = color;
             timer += Time.deltaTime;
             yield return null;
         }
 
         color.a = targetAlpha;
-        fadeImage.color = color;
+        fadeImageWhite.color = color;
 
-        fadeImage.raycastTarget = targetAlpha > 0;
+        fadeImageWhite.raycastTarget = targetAlpha > 0;
     }
 }
