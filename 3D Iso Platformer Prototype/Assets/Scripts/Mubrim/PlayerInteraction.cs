@@ -1,4 +1,4 @@
-/*Handles player interactions including picking up/placing orbs, detecting interactables, 
+﻿/*Handles player interactions including picking up/placing orbs, detecting interactables, 
 entering/exiting mirror rotation mode, and locking movement during interactions.*/
 
 using UnityEngine;
@@ -9,8 +9,10 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private Transform orbHolder;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private PlayerMovement playerMovement;
-    public FloatingBridge bridgePopper; 
-
+    public FloatingBridge bridgePopper;
+    [SerializeField] private GameObject noteUIPanel;
+    [SerializeField] private TMPro.TextMeshProUGUI noteTextUI;
+    private bool isNoteOpen = false;
 
     private Interactable nearbyInteractable;
     private bool isHoldingOrb = false;
@@ -63,17 +65,33 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         CheckForInteractable();
-
-        if (nearbyInteractable != null && Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            if (currentPrompt != null)
+            if (isNoteOpen)
             {
-                Destroy(currentPrompt);
-                currentPrompt = null;
+                CloseNoteUI();
+                return;
             }
-            nearbyInteractable.Interact();
-        }
 
+            if (nearbyInteractable != null)
+            {
+                if (currentPrompt != null)
+                {
+                    Destroy(currentPrompt);
+                    currentPrompt = null;
+                }
+
+                Note note = nearbyInteractable.GetComponent<Note>();
+                if (note != null)
+                {
+                    OpenNoteUI(note.noteText);
+                }
+                else
+                {
+                    nearbyInteractable.Interact();
+                }
+            }
+        }
         if (isLerpingToHolder && heldOrb != null)
         {
             heldOrb.transform.position = Vector3.SmoothDamp(
@@ -106,7 +124,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         nearbyInteractable = null;
 
-        Collider[] colliders = Physics.OverlapSphere(transform.position + new Vector3(0f,1f,0f), interactionRange);
+        Collider[] colliders = Physics.OverlapSphere(transform.position + new Vector3(0f, 1f, 0f), interactionRange);
         foreach (var collider in colliders)
         {
             Interactable interactable = collider.GetComponent<Interactable>();
@@ -216,4 +234,33 @@ public class PlayerInteraction : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position + new Vector3(0f, 1f, 0f), interactionRange);
     }
+
+    void OpenNoteUI(string text)
+    {
+        if (noteUIPanel != null && noteTextUI != null)
+        {
+            noteUIPanel.SetActive(true);
+            noteUIPanel.transform.localScale = Vector3.one; 
+            noteTextUI.text = text;
+            isNoteOpen = true;
+
+            if (playerMovement != null)
+                playerMovement.LockInput = true;
+        }
+    }
+
+    void CloseNoteUI()
+    {
+        if (noteUIPanel != null && noteTextUI != null)
+        {
+            noteUIPanel.SetActive(false);
+            noteUIPanel.transform.localScale = Vector3.zero; 
+            noteTextUI.text = "";
+            isNoteOpen = false;
+
+            if (playerMovement != null)
+                playerMovement.LockInput = false;
+        }
+    }
+
 }
