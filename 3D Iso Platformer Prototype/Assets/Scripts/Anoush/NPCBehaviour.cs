@@ -95,7 +95,7 @@ public class NPCBehaviour : MonoBehaviour
         isTalking = false;
         npcAnimator.SetBool("Idle", true);
         audioSource.Stop();
-        highlighter.gameObject.SetActive(false);
+        FadeOutHighlighter();
         //npcAnimator.SetTrigger("Idle");
     }
 
@@ -145,5 +145,9 @@ public class NPCBehaviour : MonoBehaviour
         {
             CameraCutsceneController.instance.PlayDoorCutscene();
         }
+    }
+    private void FadeOutHighlighter()
+    {
+
     }
 }

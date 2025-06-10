@@ -21,7 +21,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6176093967499909530
 Transform:
@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4131597733452274058}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8.154707, y: 4.334959, z: 23.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2528
+  m_VersionIndex: 2534
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -304,7 +304,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
-  - {fileID: 2100000, guid: 75680e71d48f84940bbdddd05d9852f6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -375,8 +374,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.8564377, y: 1.1067832, z: 2.6788177}
-  m_Center: {x: 0.11461544, y: 0.45543993, z: -0.05543518}
+  m_Size: {x: 0.13774869, y: 0.10802096, z: 0.09634111}
+  m_Center: {x: -0.032572657, y: -0.04394117, z: 0.20009428}
 --- !u!114 &8364677948701993534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,17 +389,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   promptMessage: Press E to interact
-  interactionPromptPrefab: {fileID: 7838911746951984074, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+  interactionPromptPrefab: {fileID: 8056783600279311869, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
     type: 3}
   switchHandle: {fileID: 8875133203823752929}
   switchRotationAngle: {x: 0, y: 0, z: 90}
-  rotationSpeed: 5
+  rotationSpeed: 2
   interactKey: 101
   OnSwitchActivated:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateController, Assembly-CSharp
         m_MethodName: OpenDoor
         m_Mode: 1
         m_Arguments:
@@ -415,7 +414,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateController, Assembly-CSharp
         m_MethodName: CloseDoor
         m_Mode: 1
         m_Arguments:
@@ -426,7 +425,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  player: {fileID: 0}
 --- !u!1 &5520844417102238506
 GameObject:
   m_ObjectHideFlags: 0
@@ -2187,7 +2185,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4232
+  m_VersionIndex: 4238
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2243,7 +2241,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
-  - {fileID: 2100000, guid: 75680e71d48f84940bbdddd05d9852f6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
