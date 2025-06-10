@@ -8,7 +8,11 @@ public class SceneController : MonoBehaviour
     public static SceneController Instance;
 
     [Header("Fade Settings")]
-    [SerializeField] private Image fadeImage;
+    public Image fadeImage;
+    public Image fadeImageBlack;
+
+    [Header("Dialogue Settings")]
+    public DialogueManager DialogueManager;
     [SerializeField] private float fadeDuration = 1f;
 
     private bool isFading = false;
@@ -22,8 +26,8 @@ public class SceneController : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
-        DontDestroyOnLoad(fadeImage.transform.parent.gameObject);
+        DontDestroyOnLoad(this.transform.parent.gameObject);
+       // DontDestroyOnLoad(fadeImage.transform.parent.gameObject);
     }
 
     public void LoadScene(string sceneName)

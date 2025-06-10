@@ -8,10 +8,10 @@ using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
-    public static DialogueManager Instance;
+    //public static DialogueManager Instance;
 
-    [SerializeField] private GameObject dialoguePanel;
-    [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] public GameObject dialoguePanel;
+    [SerializeField] public TextMeshProUGUI dialogueText;
     [SerializeField] private float typingSpeed = 0.03f;
 
     private string[] sentences;
@@ -30,7 +30,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+     //   Instance = this;
         dialoguePanel.SetActive(false);
         playerMovement = FindObjectOfType<PlayerMovement>();
     }
@@ -117,7 +117,7 @@ public class DialogueManager : MonoBehaviour
             {
                 dialoguePanel.SetActive(false);
                 isDialogueActive = false;
-
+                dialogueText.text = ""; // Clear the text
                 if (playerMovement != null) playerMovement.enabled = true;
 
                 onDialogueCompleteCallback?.Invoke(); // <- callback executed here

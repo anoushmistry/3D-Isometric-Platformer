@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         m_skin = GetComponent<MeshRenderer>();
+        fadeImage = SceneController.Instance.fadeImageBlack;
         //player = this.gameObject;
         //playerCollider = player.GetComponent<Collider>();
     }
@@ -85,6 +86,10 @@ public class PlayerController : MonoBehaviour
         {
             float cameraChangeAngle = other.GetComponent<CameraAngleChangeComponent>().GetCameraAngleChangeValue();
             SetCameraAngle(cameraChangeAngle);
+        }
+        if(other.CompareTag("Respawn"))
+        {
+            PlayerMovement.Instance.RespawnPlayer();
         }
     }
 

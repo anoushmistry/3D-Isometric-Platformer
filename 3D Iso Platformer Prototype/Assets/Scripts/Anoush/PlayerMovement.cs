@@ -3,6 +3,7 @@ using System.Collections;
 using Cinemachine;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -26,20 +27,20 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float sphereRadius = 0.5f;
     [SerializeField] float castDistance = 0.55f;
 
-    [Header("Sliding Settings (Currently Not in Use)")]
-    [SerializeField] private float slideSpeed;
-    [SerializeField] private bool isSliding;
-    [SerializeField] private float slopeLimit;
-    [SerializeField] private Rigidbody rb;
+    //[Header("Sliding Settings (Currently Not in Use)")]
+    //[SerializeField] private float slideSpeed;
+    //[SerializeField] private bool isSliding;
+    //[SerializeField] private float slopeLimit;
+    //[SerializeField] private Rigidbody rb;
 
     [Header("Movement Settings")]
     [SerializeField] public bool LockInput = false;
     [SerializeField] private float horizontal;
     [SerializeField] private float vertical;
 
-    [Header("Interaction")]
-    [SerializeField] private float interactionRange = 3f;
-    public LayerMask interactableLayer;
+    //[Header("Interaction")]
+    //[SerializeField] private float interactionRange = 3f;
+    //public LayerMask interactableLayer;
 
     [Header("Light Emitter Settings")]
     [SerializeField] private LightEmitter currentEmitter;
@@ -53,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform ladderTop;
     public Transform ladderBottom;
     public float climbSpeed = 3f;
-    public LayerMask ladderLayer;
+    //public LayerMask ladderLayer;
     private bool isOnLadder = false;
     private bool isClimbing = false;
     private Transform currentLadder;
@@ -62,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     private Interactable currentLadderPrompt;
 
     [Header("Respawn Settings")]
-    [SerializeField] private CanvasGroup fadeCanvasGroup;
+    [SerializeField] private Image fadeImageBlack;
     [SerializeField] private float fadeDuration = 0.5f;
     private Vector3 lastGroundedPosition;
     private float lastGroundedSaveTimer = 0f;
@@ -89,9 +90,11 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         animator = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
         lastGroundedPosition = transform.position;
+        animator.stabilizeFeet = true;
+        fadeImageBlack = SceneController.Instance.fadeImageBlack;
     }
 
     void Update()
@@ -119,10 +122,10 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (transform.position.y < -20f)
-        {
-            StartCoroutine(RespawnPlayer());
-        }
+        //if (transform.position.y < -20f)
+        //{
+        //    StartCoroutine(RespawnPlayer());
+        //}
     }
 
     void CalculateInput()
@@ -152,7 +155,10 @@ public class PlayerMovement : MonoBehaviour
             velocity.y += Mathf.Sqrt(2 * jumpHeight * -gravity) * mass;
 
         Vector3 movement = isoMoveDirection * speed * Time.deltaTime;
-        controller.Move(movement + velocity * Time.deltaTime + externalMovement);
+        if (controller.enabled)
+        {
+            controller.Move(movement + velocity * Time.deltaTime + externalMovement);
+        }
         externalMovement = Vector3.zero;
         if (isoMoveDirection.magnitude >= 0.1f)
         {
@@ -175,7 +181,8 @@ public class PlayerMovement : MonoBehaviour
         velocity = Vector3.zero;
 
         controller.enabled = false;
-        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.5f);
+        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.75f) + (-ladder.right * 0.75f);
+        //Vector3 snapPosition = ladder.position + (-ladder.forward * -0.5f);
         snapPosition.y = transform.position.y;
         transform.position = snapPosition;
         transform.rotation = Quaternion.LookRotation(-ladder.forward);
@@ -194,7 +201,7 @@ public class PlayerMovement : MonoBehaviour
 
         animator?.SetInteger("ClimbingSpeed", (int)verticalInput);
 
-        if (transform.position.y >= ladderTop.position.y - 0.1f && verticalInput > 0)
+        if (transform.position.y >= ladderTop.position.y - 0.5f && verticalInput > 0)
         {
             ExitLadder(new Vector3(transform.position.x, ladderTop.position.y, transform.position.z));
         }
@@ -226,19 +233,62 @@ public class PlayerMovement : MonoBehaviour
 
     public float getIsometricYValue() => isoTransformYValue;
 
-    private IEnumerator RespawnPlayer()
+    public void RespawnPlayer()
+    {
+        StartCoroutine(RespawnPlayerCoroutine());
+    }
+    //private IEnumerator RespawnPlayerCoroutine()
+    //{
+    //    LockInput = true;
+    //    controller.enabled = false;
+
+    //    // Enable the fade panel first
+    //    fadeImage.gameObject.SetActive(true);
+
+    //    // Fade to black
+    //    yield return DOTween.To(() => fadeImage.alpha, x => fadeImage.alpha = x, 1, fadeDuration)
+    //                        .SetUpdate(true)
+    //                        .WaitForCompletion();
+
+    //    // Move player
+    //    transform.position = lastGroundedPosition + Vector3.up * 1f;
+    //    velocity = Vector3.zero;
+
+    //    yield return new WaitForSeconds(0.2f);
+
+    //    // Fade back in
+    //    yield return DOTween.To(() => fadeImage.alpha, x => fadeImage.alpha = x, 0, fadeDuration)
+    //                        .SetUpdate(true)
+    //                        .WaitForCompletion();
+
+    //    // Disable fade panel after fade-in
+    //    fadeImage.gameObject.SetActive(false);
+
+    //    controller.enabled = true;
+    //    LockInput = false;
+    //}
+    private IEnumerator RespawnPlayerCoroutine()
     {
         LockInput = true;
-        controller.enabled = false;
+        //controller.enabled = false;
 
         // Enable the fade panel first
-        fadeCanvasGroup.gameObject.SetActive(true);
+        fadeImageBlack.gameObject.SetActive(true);
+
+        // Get initial color
+        Color fadeColor = fadeImageBlack.color;
 
         // Fade to black
-        yield return DOTween.To(() => fadeCanvasGroup.alpha, x => fadeCanvasGroup.alpha = x, 1, fadeDuration)
+        yield return DOTween.To(() => fadeColor.a,
+                              x =>
+                              {
+                                  fadeColor.a = x;
+                                  fadeImageBlack.color = fadeColor;
+                              },
+                              1, fadeDuration)
                             .SetUpdate(true)
                             .WaitForCompletion();
-
+        controller.enabled = false;
         // Move player
         transform.position = lastGroundedPosition + Vector3.up * 1f;
         velocity = Vector3.zero;
@@ -246,12 +296,18 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         // Fade back in
-        yield return DOTween.To(() => fadeCanvasGroup.alpha, x => fadeCanvasGroup.alpha = x, 0, fadeDuration)
+        yield return DOTween.To(() => fadeColor.a,
+                              x =>
+                              {
+                                  fadeColor.a = x;
+                                  fadeImageBlack.color = fadeColor;
+                              },
+                              0, fadeDuration)
                             .SetUpdate(true)
                             .WaitForCompletion();
 
         // Disable fade panel after fade-in
-        fadeCanvasGroup.gameObject.SetActive(false);
+        fadeImageBlack.gameObject.SetActive(false);
 
         controller.enabled = true;
         LockInput = false;

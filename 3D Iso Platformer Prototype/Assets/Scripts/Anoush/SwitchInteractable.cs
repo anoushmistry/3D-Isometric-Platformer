@@ -18,11 +18,16 @@ public class SwitchInteractable : Interactable
 
     private bool isOn = false;
     private bool playerInRange = false;
-   // [SerializeField] private Transform player;
+    // [SerializeField] private Transform player;
     private Quaternion initialRotation;
     private Quaternion targetRotation;
     private Coroutine rotateCoroutine;
 
+    [Header("Tutorial Level")]
+    [Tooltip("Set this to true if this switch is part of the tutorial level. It will trigger a text fade out when activated.")]
+    [SerializeField] private bool IsTutorialLevel;
+    [Tooltip("Don't Use or assign this unless it's the tutorial level switch")]
+    [SerializeField] private TextFade textFadeComponent;
     private bool isInInteractable { get; set; }
 
     void Start()
@@ -33,11 +38,17 @@ public class SwitchInteractable : Interactable
     }
     public override void Interact()
     {
-        if(isInInteractable)
+        if (isInInteractable)
         {
             isOn = !isOn;
 
             StartCoroutine(RotateSwitch());
+
+            if (IsTutorialLevel)
+                if (textFadeComponent != null)
+                    textFadeComponent.FadeOut();
+                else
+                    Debug.LogWarning("TextFade component is not assigned in the inspector.");
             //if (isOn)
             //{
             //    rotateCoroutine = StartCoroutine(RotateSwitch());
@@ -59,7 +70,7 @@ public class SwitchInteractable : Interactable
         Quaternion goalRotation = isOn ? targetRotation : initialRotation;
         float t = 0f;
 
-        while (t < 1f) 
+        while (t < 1f)
         {
             t += Time.deltaTime * rotationSpeed;
             switchHandle.localRotation = Quaternion.Slerp(startRotation, goalRotation, t);
