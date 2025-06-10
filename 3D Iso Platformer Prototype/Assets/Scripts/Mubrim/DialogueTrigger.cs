@@ -10,7 +10,7 @@ public class DialogueTrigger : Interactable
         if (hasInteracted || DialogueManager.Instance.IsDialogueActive())
             return;
 
-        DialogueManager.Instance.StartDialogue(dialogue.sentences, OnDialogueFinished);
+       DialogueManager.Instance.StartDialogue(dialogue.sentences, OnDialogueFinished);
     }
 
     private void OnDialogueFinished()

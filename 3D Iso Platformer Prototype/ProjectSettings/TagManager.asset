@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Light
   - Mirror
-  - LightReceiver
   - LightObject
   - Room
   - CameraChange

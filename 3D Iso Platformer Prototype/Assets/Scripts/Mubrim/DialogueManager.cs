@@ -4,13 +4,14 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
 
-    [SerializeField] private GameObject dialoguePanel;
-    [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] public GameObject dialoguePanel;
+    [SerializeField] public TextMeshProUGUI dialogueText;
     [SerializeField] private float typingSpeed = 0.03f;
 
     private string[] sentences;
@@ -22,6 +23,10 @@ public class DialogueManager : MonoBehaviour
 
     private PlayerMovement playerMovement;
     private Action onDialogueCompleteCallback; // NEW
+
+    public Action OnDialogueStart, OnDialogueEnd;
+    public Action<int> OnSentenceChanged;
+
 
     private void Awake()
     {
@@ -39,6 +44,8 @@ public class DialogueManager : MonoBehaviour
         isDialogueActive = true;
         onDialogueCompleteCallback = onComplete;
 
+        OnDialogueStart?.Invoke();
+        OnSentenceChanged?.Invoke(currentIndex);
         if (playerMovement != null) playerMovement.enabled = false;
 
         ShowPanelAndStartTyping();
@@ -91,6 +98,7 @@ public class DialogueManager : MonoBehaviour
                 currentIndex++;
                 if (currentIndex < sentences.Length)
                 {
+                    OnSentenceChanged?.Invoke(currentIndex);
                     StartTyping();
                 }
                 else
@@ -109,11 +117,12 @@ public class DialogueManager : MonoBehaviour
             {
                 dialoguePanel.SetActive(false);
                 isDialogueActive = false;
-
+                dialogueText.text = ""; // Clear the text
                 if (playerMovement != null) playerMovement.enabled = true;
 
                 onDialogueCompleteCallback?.Invoke(); // <- callback executed here
                 onDialogueCompleteCallback = null;
+                OnDialogueEnd?.Invoke();
             });
     }
 
