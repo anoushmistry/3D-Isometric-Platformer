@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections;
 using Cinemachine;
 using DG.Tweening;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
     public static PlayerMovement Instance;
 
     [Header("Player Movement Settings")]
@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     private float currentVelocity;
     private bool isGrounded;
     private Animator animator;
+    private Vector3 externalMovement;
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Sphere Cast Settings (For Ground Check)")]
@@ -30,7 +31,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool isSliding;
     [SerializeField] private float slopeLimit;
     [SerializeField] private Rigidbody rb;
-
 
     [Header("Movement Settings")]
     [SerializeField] public bool LockInput = false;
@@ -45,23 +45,28 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LightEmitter currentEmitter;
 
     [Header("Isometric Movement (Camera Settings)")]
-    [Tooltip("The start value of the cinemachine camera angle. This is helpful for switching back to the original Camera angle after an angle change")]
     public float startIsoTransformYValue;
-    [Tooltip("The Y rotation of the camera in isometric view. Adjust this to match your camera's angle.")]
     [SerializeField] private float isoTransformYValue;
-    [Tooltip("Cinemachine Virtual Camera for isometric view")]
     [SerializeField] public CinemachineVirtualCamera cinemachineVirtualCamera;
 
     [Header("Ladder Settings")]
     public Transform ladderTop;
     public Transform ladderBottom;
     public float climbSpeed = 3f;
+    public LayerMask ladderLayer;
     private bool isOnLadder = false;
     private bool isClimbing = false;
     private Transform currentLadder;
     private bool promptShown = false;
 
     private Interactable currentLadderPrompt;
+
+    [Header("Respawn Settings")]
+    [SerializeField] private CanvasGroup fadeCanvasGroup;
+    [SerializeField] private float fadeDuration = 0.5f;
+    private Vector3 lastGroundedPosition;
+    private float lastGroundedSaveTimer = 0f;
+    private float saveInterval = 5f;
 
     private void Awake()
     {
@@ -86,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
+        lastGroundedPosition = transform.position;
     }
 
     void Update()
@@ -97,11 +103,25 @@ public class PlayerMovement : MonoBehaviour
         {
             CalculateInput();
             HandleMovement();
-            //DetectLadderPrompt();
         }
         else
         {
             HandleLadderClimbInput();
+        }
+
+        if (isGrounded)
+        {
+            lastGroundedSaveTimer += Time.deltaTime;
+            if (lastGroundedSaveTimer >= saveInterval)
+            {
+                lastGroundedPosition = transform.position;
+                lastGroundedSaveTimer = 0f;
+            }
+        }
+
+        if (transform.position.y < -20f)
+        {
+            StartCoroutine(RespawnPlayer());
         }
     }
 
@@ -132,8 +152,8 @@ public class PlayerMovement : MonoBehaviour
             velocity.y += Mathf.Sqrt(2 * jumpHeight * -gravity) * mass;
 
         Vector3 movement = isoMoveDirection * speed * Time.deltaTime;
-        controller.Move(movement + velocity * Time.deltaTime);
-
+        controller.Move(movement + velocity * Time.deltaTime + externalMovement);
+        externalMovement = Vector3.zero;
         if (isoMoveDirection.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(isoMoveDirection.x, isoMoveDirection.z) * Mathf.Rad2Deg;
@@ -147,38 +167,6 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = controller.isGrounded;
     }
 
-    /*void DetectLadderPrompt()
-    {
-        Ray ray = new Ray(transform.position + Vector3.up * 0.5f, transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, 1f, ladderLayer))
-        {
-            if (!promptShown && hit.transform.TryGetComponent(out Interactable interactable))
-            {
-                currentLadder = hit.transform;
-                currentLadderPrompt = interactable;
-                interactable.ShowPrompt();
-                promptShown = true;
-            }
-
-            if (promptShown && Input.GetKeyDown(KeyCode.E))
-            {
-                currentLadderPrompt?.HidePrompt();
-                currentLadderPrompt = null;
-                promptShown = false;
-                StickToLadder(currentLadder);
-            }
-        }
-        else
-        {
-            if (promptShown)
-            {
-                currentLadderPrompt?.HidePrompt();
-                promptShown = false;
-                currentLadderPrompt = null;
-            }
-        }
-    }*/
-
     public void StickToLadder(Transform ladder)
     {
         isOnLadder = true;
@@ -187,18 +175,16 @@ public class PlayerMovement : MonoBehaviour
         velocity = Vector3.zero;
 
         controller.enabled = false;
-        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.75f) + (-ladder.right * 0.75f); // offset to stay in front
-        snapPosition.y = transform.position.y; // 1f cause pivot is foot;
-        //snapPosition.y = ladderBottom.position.y;
+        Vector3 snapPosition = ladder.position + (-ladder.forward * -0.5f);
+        snapPosition.y = transform.position.y;
         transform.position = snapPosition;
         transform.rotation = Quaternion.LookRotation(-ladder.forward);
         controller.enabled = true;
 
         currentLadder = ladder;
-        animator?.SetBool("isClimbing", true);  // Plays Ladder climb animation
-        animator?.SetInteger("ClimbingSpeed", 0);  // Plays Ladder idle animation
+        animator?.SetBool("isClimbing", true);
+        animator?.SetInteger("ClimbingSpeed", 0);
     }
-
 
     void HandleLadderClimbInput()
     {
@@ -206,11 +192,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 climbDirection = new Vector3(0, verticalInput * climbSpeed, 0);
         controller.Move(climbDirection * Time.deltaTime);
 
-        //   animator?.SetFloat("Speed", Mathf.Abs(verticalInput));
-
         animator?.SetInteger("ClimbingSpeed", (int)verticalInput);
 
-        if (transform.position.y >= ladderTop.position.y - 0.5f && verticalInput > 0)
+        if (transform.position.y >= ladderTop.position.y - 0.1f && verticalInput > 0)
         {
             ExitLadder(new Vector3(transform.position.x, ladderTop.position.y, transform.position.z));
         }
@@ -232,13 +216,47 @@ public class PlayerMovement : MonoBehaviour
         transform.position = exitPosition;
         controller.enabled = true;
 
-        velocity.y = -1f; // reapply slight gravity to trigger grounded
+        velocity.y = -1f;
+    }
 
+    public void ApplyExternalMovement(Vector3 movement)
+    {
+        externalMovement += movement;
     }
 
     public float getIsometricYValue() => isoTransformYValue;
 
-    
+    private IEnumerator RespawnPlayer()
+    {
+        LockInput = true;
+        controller.enabled = false;
+
+        // Enable the fade panel first
+        fadeCanvasGroup.gameObject.SetActive(true);
+
+        // Fade to black
+        yield return DOTween.To(() => fadeCanvasGroup.alpha, x => fadeCanvasGroup.alpha = x, 1, fadeDuration)
+                            .SetUpdate(true)
+                            .WaitForCompletion();
+
+        // Move player
+        transform.position = lastGroundedPosition + Vector3.up * 1f;
+        velocity = Vector3.zero;
+
+        yield return new WaitForSeconds(0.2f);
+
+        // Fade back in
+        yield return DOTween.To(() => fadeCanvasGroup.alpha, x => fadeCanvasGroup.alpha = x, 0, fadeDuration)
+                            .SetUpdate(true)
+                            .WaitForCompletion();
+
+        // Disable fade panel after fade-in
+        fadeCanvasGroup.gameObject.SetActive(false);
+
+        controller.enabled = true;
+        LockInput = false;
+    }
+
 }
 
 public static class HelpersCharacterController
