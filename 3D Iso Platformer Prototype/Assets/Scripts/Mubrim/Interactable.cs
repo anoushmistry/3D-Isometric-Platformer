@@ -31,6 +31,7 @@ public abstract class Interactable : MonoBehaviour
         // Position prompt slightly above the object's center
         Vector3 spawnPosition = GetComponent<Collider>().bounds.center + Vector3.up * 3f;
         currentPromptInstance = Instantiate(interactionPromptPrefab, spawnPosition, Quaternion.identity);
+        interactionPromptPrefab.SetActive(true);
 
         if (mainCamera != null)
         {
