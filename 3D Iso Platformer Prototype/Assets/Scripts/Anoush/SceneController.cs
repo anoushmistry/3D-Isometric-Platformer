@@ -5,6 +5,7 @@ using System.Collections;
 
 public class SceneController : MonoBehaviour
 {
+    private string LastPlayerLevel;
     public static SceneController Instance;
 
     [Header("Fade Settings")]
@@ -23,12 +24,30 @@ public class SceneController : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
+        //LoadLastPlayedLevel(); // Load the last played level on startup
     }
 
     public void LoadScene(string sceneName)
     {
         if (!isFading)
+        {
+            PlayerPrefs.SetString("LastPlayedLevel", sceneName);
+            PlayerPrefs.Save(); // Optional but ensures it's written immediately
             StartCoroutine(FadeAndLoad(sceneName));
+        }
+    }
+    public void LoadLastPlayedLevel()
+    {
+        if (PlayerPrefs.HasKey("LastPlayedLevel"))
+        {
+            string savedScene = PlayerPrefs.GetString("LastPlayedLevel");
+            LoadScene(savedScene);
+        }
+        else
+        {
+            Debug.LogWarning("No last played level found. Loading default scene...");
+            LoadScene("Tutorial Level"); // Or your fallback level
+        }
     }
 
     private IEnumerator FadeAndLoad(string sceneName)
@@ -71,5 +90,14 @@ public class SceneController : MonoBehaviour
         fadeImageWhite.color = color;
 
         fadeImageWhite.raycastTarget = targetAlpha > 0;
+    }
+    public void ExitGame()
+    {
+        Debug.Log("Exiting game...");
+        Application.Quit();
+    }
+    public void ClearSavedProgress()
+    {
+        PlayerPrefs.DeleteKey("LastPlayedLevel");
     }
 }
