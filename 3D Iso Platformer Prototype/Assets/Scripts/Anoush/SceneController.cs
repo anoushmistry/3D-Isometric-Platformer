@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
@@ -10,6 +10,11 @@ public class SceneController : MonoBehaviour
     [Header("Fade Settings")]
     public Image fadeImageWhite;
     [SerializeField] private float fadeDuration = 1f;
+    [Header("Ambient Clips")]
+    public AudioClip suspenseAmbientClip;
+    public AudioClip natureAmbientClip;
+
+
 
     private bool isFading = false;
 
@@ -38,16 +43,33 @@ public class SceneController : MonoBehaviour
         // Fade Out
         yield return StartCoroutine(Fade(1));
 
-        // Load scene (replaces current scene)
+        // Load scene
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         while (!loadOp.isDone)
             yield return null;
+
+        // ✅ Play ambient based on scene
+        if (SoundManager.Instance != null)
+        {
+            string lowerName = sceneName.ToLower();
+
+            if (lowerName.Contains("tutorial level"))
+            {
+                SoundManager.Instance.PlayEnvironmentSound(suspenseAmbientClip);
+            }
+            else
+            {
+                SoundManager.Instance.PlayEnvironmentSound(natureAmbientClip);
+            }
+        }
 
         // Fade In
         yield return StartCoroutine(Fade(0));
 
         isFading = false;
     }
+
+
 
     private IEnumerator Fade(float targetAlpha)
     {
@@ -69,7 +91,6 @@ public class SceneController : MonoBehaviour
 
         color.a = targetAlpha;
         fadeImageWhite.color = color;
-
         fadeImageWhite.raycastTarget = targetAlpha > 0;
     }
 }

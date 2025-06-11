@@ -1,84 +1,52 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
 
-    [Header("Audio Sources")]
-    public AudioSource musicSource;
-    public AudioSource musicSourceSecondary; // for crossfade, optional
-    public GameObject sfxSourcePrefab;
-    public int sfxPoolSize = 10;
-
-    [Header("Volume Settings")]
-    [Range(0f, 1f)] public float musicVolume = 1f;
-    [Range(0f, 1f)] public float sfxVolume = 1f;
-
-    private List<AudioSource> sfxSources = new List<AudioSource>();
-    private int currentSfxIndex = 0;
+    [Header("Environment Sound")]
+    public AudioSource environmentSource;
+    [Range(0f, 1f)] public float environmentVolume = 1f;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializeSfxPool();
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    private void InitializeSfxPool()
+    public void PlayEnvironmentSound(AudioClip clip)
     {
-        for (int i = 0; i < sfxPoolSize; i++)
+        if (environmentSource == null || clip == null)
         {
-            GameObject sfxObj = Instantiate(sfxSourcePrefab, transform);
-            AudioSource src = sfxObj.GetComponent<AudioSource>();
-            src.playOnAwake = false;
-            sfxSources.Add(src);
+            Debug.LogWarning("Missing AudioSource or AudioClip!");
+            return;
         }
+
+        if (environmentSource.clip == clip && environmentSource.isPlaying) return;
+
+        environmentSource.clip = clip;
+        environmentSource.loop = true;
+        environmentSource.volume = environmentVolume;
+        environmentSource.Play();
     }
 
-    // === MUSIC ===
-    public void PlayMusic(AudioClip clip, bool loop = true)
-    {
-        if (musicSource.isPlaying && musicSource.clip == clip) return;
 
-        musicSource.clip = clip;
-        musicSource.loop = loop;
-        musicSource.volume = musicVolume;
-        musicSource.Play();
+    public void StopEnvironmentSound()
+    {
+        if (environmentSource != null)
+            environmentSource.Stop();
     }
 
-    public void StopMusic()
+    public void SetEnvironmentVolume(float volume)
     {
-        musicSource.Stop();
-    }
-
-    public void SetMusicVolume(float volume)
-    {
-        musicVolume = volume;
-        musicSource.volume = musicVolume;
-    }
-
-    // === SOUND EFFECTS ===
-    public void PlaySFX(AudioClip clip, float pitchRandom = 0f)
-    {
-        AudioSource src = sfxSources[currentSfxIndex];
-        currentSfxIndex = (currentSfxIndex + 1) % sfxSources.Count;
-
-        src.clip = clip;
-        src.volume = sfxVolume;
-        src.pitch = 1f + Random.Range(-pitchRandom, pitchRandom);
-        src.Play();
-    }
-
-    public void SetSFXVolume(float volume)
-    {
-        sfxVolume = volume;
+        environmentVolume = volume;
+        if (environmentSource != null)
+            environmentSource.volume = volume;
     }
 }

@@ -2058,6 +2058,12 @@ PrefabInstance:
       propertyPath: playerInteraction
       value: 
       objectReference: {fileID: 1580420232}
+    - target: {fileID: 2363231278121677888, guid: e2ba5560ba4fe0b4ca3f5cde565721c9,
+        type: 3}
+      propertyPath: interactionPromptPrefab
+      value: 
+      objectReference: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+        type: 3}
     - target: {fileID: 7230725706980909683, guid: e2ba5560ba4fe0b4ca3f5cde565721c9,
         type: 3}
       propertyPath: m_Name
@@ -2289,9 +2295,9 @@ GameObject:
   m_Component:
   - component: {fileID: 249402035}
   - component: {fileID: 249402034}
-  - component: {fileID: 249402033}
   - component: {fileID: 249402036}
   - component: {fileID: 249402037}
+  - component: {fileID: 249402038}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2299,14 +2305,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &249402033
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 249402032}
-  m_Enabled: 1
 --- !u!20 &249402034
 Camera:
   m_ObjectHideFlags: 0
@@ -2451,6 +2449,14 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!81 &249402038
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249402032}
+  m_Enabled: 1
 --- !u!43 &281751470
 Mesh:
   m_ObjectHideFlags: 0
@@ -4277,6 +4283,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: SceneController
       objectReference: {fileID: 0}
+    - target: {fileID: 5532230547763587354, guid: f9dd6f21df693b440a7b9db5ce1149fa,
+        type: 3}
+      propertyPath: ambientLoopClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9e5cb34e2bc9c28458a0a2cc4613dcf8, type: 3}
+    - target: {fileID: 5532230547763587354, guid: f9dd6f21df693b440a7b9db5ce1149fa,
+        type: 3}
+      propertyPath: natureAmbientClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9e5cb34e2bc9c28458a0a2cc4613dcf8, type: 3}
+    - target: {fileID: 5532230547763587354, guid: f9dd6f21df693b440a7b9db5ce1149fa,
+        type: 3}
+      propertyPath: suspenseAmbientClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 385d44e50febcd941bec5f9d0dc90d2c, type: 3}
     - target: {fileID: 7504401078511828572, guid: f9dd6f21df693b440a7b9db5ce1149fa,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4453,6 +4474,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!4 &760534338 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5953139807870574116, guid: 0f86989b46c513c4da412a32a2021730,
+    type: 3}
+  m_PrefabInstance: {fileID: 764680355}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &764680355
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4461,6 +4488,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1192981286}
     m_Modifications:
+    - target: {fileID: 80553669435525438, guid: 0f86989b46c513c4da412a32a2021730,
+        type: 3}
+      propertyPath: smokeSpawnPoint
+      value: 
+      objectReference: {fileID: 760534338}
     - target: {fileID: 80553669435525438, guid: 0f86989b46c513c4da412a32a2021730,
         type: 3}
       propertyPath: attachedSwitchInteractable
@@ -9085,7 +9117,7 @@ PrefabInstance:
     - target: {fileID: 9171968709791432870, guid: c85de65349f90af489567d730e21aff8,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 6245
+      value: 6254
       objectReference: {fileID: 0}
     - target: {fileID: 9171968709791432870, guid: c85de65349f90af489567d730e21aff8,
         type: 3}

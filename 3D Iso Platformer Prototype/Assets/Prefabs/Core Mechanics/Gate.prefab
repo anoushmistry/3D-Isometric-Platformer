@@ -101,7 +101,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openOffset: {x: 0, y: -5.5, z: 0}
-  moveSpeed: 2
+  moveSpeed: 15
+  smokeSpawnPoint: {fileID: 5953139807870574116}
+  smokeBurst: {fileID: 4526062588407538990, guid: 6c8427f86bc6a7d469e89209ec54f569,
+    type: 3}
   attachedSwitchInteractable: {fileID: 0}
 --- !u!65 &8357031316778278474
 BoxCollider:

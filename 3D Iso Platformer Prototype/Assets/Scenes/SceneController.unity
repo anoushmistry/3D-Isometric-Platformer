@@ -291,8 +291,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aced100b7a83a6f4e899c147e0eee174, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeImage: {fileID: 1878596390}
+  fadeImageWhite: {fileID: 0}
   fadeDuration: 1
+  suspenseAmbientClip: {fileID: 0}
+  natureAmbientClip: {fileID: 0}
 --- !u!4 &1925717892
 Transform:
   m_ObjectHideFlags: 0

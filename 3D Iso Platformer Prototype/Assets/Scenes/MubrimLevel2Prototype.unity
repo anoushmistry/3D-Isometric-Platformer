@@ -20909,7 +20909,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 5b6ae52ed60097a40af34d118cf9aa50, type: 3}
 --- !u!4 &1016819274 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8825761164345323712, guid: 5b6ae52ed60097a40af34d118cf9aa50,
+  m_CorrespondingSourceObject: {fileID: 8520532306989774365, guid: 5b6ae52ed60097a40af34d118cf9aa50,
     type: 3}
   m_PrefabInstance: {fileID: 1016819273}
   m_PrefabAsset: {fileID: 0}
@@ -23200,17 +23200,9 @@ MonoBehaviour:
     m_Bits: 0
   sphereRadius: 0.5
   castDistance: 0.55
-  slideSpeed: 0
-  isSliding: 0
-  slopeLimit: 0
-  rb: {fileID: 0}
   LockInput: 0
   horizontal: 0
   vertical: 0
-  interactionRange: 3
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 128
   currentEmitter: {fileID: 0}
   startIsoTransformYValue: 0
   isoTransformYValue: 0
@@ -23218,10 +23210,7 @@ MonoBehaviour:
   ladderTop: {fileID: 0}
   ladderBottom: {fileID: 0}
   climbSpeed: 3
-  ladderLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  fadeCanvasGroup: {fileID: 0}
+  fadeImageBlack: {fileID: 0}
   fadeDuration: 0.5
 --- !u!114 &1141507912
 MonoBehaviour:
@@ -27092,56 +27081,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!1 &1437063337
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1437063339}
-  - component: {fileID: 1437063338}
-  m_Layer: 0
-  m_Name: SoundManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1437063338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1437063337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e02cdf521ef7549419ae35e788741693, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  musicSource: {fileID: 0}
-  musicSourceSecondary: {fileID: 0}
-  sfxSourcePrefab: {fileID: 0}
-  sfxPoolSize: 10
-  musicVolume: 1
-  sfxVolume: 1
---- !u!4 &1437063339
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1437063337}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -42.443413, y: 21.16632, z: 4.9476714}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1446266924
 Mesh:
   m_ObjectHideFlags: 0
@@ -38193,7 +38132,6 @@ SceneRoots:
   - {fileID: 498519697}
   - {fileID: 181292713}
   - {fileID: 1665856662}
-  - {fileID: 1437063339}
   - {fileID: 1610340142}
   - {fileID: 1983776911}
   - {fileID: 288111062}
