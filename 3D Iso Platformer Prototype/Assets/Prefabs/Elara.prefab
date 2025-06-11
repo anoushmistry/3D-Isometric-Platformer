@@ -533,6 +533,9 @@ MonoBehaviour:
   climbSpeed: 3
   fadeImageBlack: {fileID: 0}
   fadeDuration: 0.5
+  audioSource: {fileID: 0}
+  footstepClip: {fileID: 8300000, guid: f7270b281b0f1f542ba734a45cdaedd3, type: 3}
+  climbClip: {fileID: 8300000, guid: b711e1fd2bfe06c4b96f176f386bf142, type: 3}
 --- !u!114 &2257248010633788217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,14 +563,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionRange: 1.5
-  orbHolder: {fileID: 6506698262345140393}
   moveSpeed: 5
-  playerMovement: {fileID: 1342386154827322902}
-  bridgePopper: {fileID: 0}
+  orbHolder: {fileID: 6506698262345140393}
   noteUIPanel: {fileID: 0}
   noteTextUI: {fileID: 0}
-  interactPromptPrefab: {fileID: 7838911746951984074, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
-    type: 3}
+  playerMovement: {fileID: 1342386154827322902}
+  bridgePopper: {fileID: 0}
+  audioSource: {fileID: 0}
+  pickupOrbClip: {fileID: 8300000, guid: 9e6bfaa860faa9f4d88a29bce83973da, type: 3}
+  placeOrbClip: {fileID: 8300000, guid: 9b53d9b5c81c5f644be9b2f9f5289804, type: 3}
+  nearbyInteractable: {fileID: 0}
 --- !u!54 &5559228694809096933
 Rigidbody:
   m_ObjectHideFlags: 0

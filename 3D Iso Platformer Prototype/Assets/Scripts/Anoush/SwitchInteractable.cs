@@ -6,8 +6,9 @@ public class SwitchInteractable : Interactable
 {
     [Header("Switch Rotation")]
     public Transform switchHandle;
-    public Vector3 switchRotationAngle = new Vector3(-45f, 0, 0);
-    public float rotationSpeed = 5f;
+    //public Vector3 switchRotationAngle = new Vector3(-45f, 0, 0);
+    //public float rotationSpeed = 5f;
+    public float pushDownSpeed;
 
     [Header("Interaction Settings")]
     public KeyCode interactKey = KeyCode.E;
@@ -16,79 +17,107 @@ public class SwitchInteractable : Interactable
     public UnityEvent OnSwitchActivated;
     public UnityEvent OnSwitchDeactivated;
 
-    private bool isOn = false;
-    private bool playerInRange = false;
-    // [SerializeField] private Transform player;
-    private Quaternion initialRotation;
-    private Quaternion targetRotation;
-    private Coroutine rotateCoroutine;
+    [Header("Audio")]
+    public AudioSource switchAudioSource;
+    public AudioClip switchSound;
 
     [Header("Tutorial Level")]
     [Tooltip("Set this to true if this switch is part of the tutorial level. It will trigger a text fade out when activated.")]
     [SerializeField] private bool IsTutorialLevel;
     [Tooltip("Don't Use or assign this unless it's the tutorial level switch")]
     [SerializeField] private TextFade textFadeComponent;
+
+    [SerializeField] private Vector3 switchOffset;
+    private bool isOn = false;
     private bool isInInteractable { get; set; }
+    //private Quaternion initialRotation;
+    //private Quaternion targetRotation;
 
     void Start()
     {
-        initialRotation = switchHandle.localRotation;
-        targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
+        switchAudioSource = GetComponent<AudioSource>();
+        //initialRotation = switchHandle.localRotation;
+        //targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
         isInInteractable = true;
     }
+
     public override void Interact()
     {
-        if (isInInteractable)
-        {
-            isOn = !isOn;
+        if (!isInInteractable) return;
 
-            StartCoroutine(RotateSwitch());
+        isOn = !isOn;
+        StartCoroutine(MoveSwitchDown());
+        //StartCoroutine(RotateSwitchWithSound());
 
-            if (IsTutorialLevel)
-                if (textFadeComponent != null)
-                    textFadeComponent.FadeOut();
-                else
-                    Debug.LogWarning("TextFade component is not assigned in the inspector.");
-            //if (isOn)
-            //{
-            //    rotateCoroutine = StartCoroutine(RotateSwitch());
-            //    OnSwitchActivated?.Invoke();
-            //}
-            //else
-            //{
-            //    rotateCoroutine = StartCoroutine(RotateSwitch());
-            //    OnSwitchDeactivated?.Invoke();
-            //}
-        }
-
+        if (IsTutorialLevel && textFadeComponent != null)
+            textFadeComponent.FadeOut();
     }
 
-    private IEnumerator RotateSwitch()
+    //private IEnumerator RotateSwitchWithSound()
+    //{
+    //    isInInteractable = false;
+
+    //    if (switchAudioSource != null && switchSound != null)
+    //    {
+    //        switchAudioSource.PlayOneShot(switchSound);
+    //        yield return new WaitForSeconds(switchSound.length);
+    //    }
+
+    //    Quaternion startRotation = switchHandle.localRotation;
+    //    Quaternion goalRotation = isOn ? targetRotation : initialRotation;
+    //    float t = 0f;
+
+    //    while (t < 1f)
+    //    {
+    //        t += Time.deltaTime * rotationSpeed;
+    //        switchHandle.localRotation = Quaternion.Slerp(startRotation, goalRotation, t);
+    //        yield return null;
+    //    }
+
+    //    switchHandle.localRotation = goalRotation;
+
+    //    if (isOn) OnSwitchActivated?.Invoke();
+    //    else OnSwitchDeactivated?.Invoke();
+
+    //    isInInteractable = true;
+    //}
+    private IEnumerator MoveSwitchDown()
     {
-        isInInteractable = false; // Prevent further interactions during rotation
-        Quaternion startRotation = switchHandle.localRotation;
-        Quaternion goalRotation = isOn ? targetRotation : initialRotation;
+        isInInteractable = false; // Prevent interaction during motion
+        HidePrompt();
+
+        if (switchAudioSource != null && switchSound != null)
+        {
+            switchAudioSource.PlayOneShot(switchSound);
+        }
+
+        Vector3 startPosition = switchHandle.localPosition;
+        Vector3 endPosition = startPosition + switchOffset; // Adjust offset based on model
         float t = 0f;
 
         while (t < 1f)
         {
-            t += Time.deltaTime * rotationSpeed;
-            switchHandle.localRotation = Quaternion.Slerp(startRotation, goalRotation, t);
-            yield return null; // Wait for the next frame
+            t += Time.deltaTime * pushDownSpeed;
+            switchHandle.localPosition = Vector3.Lerp(startPosition, endPosition, t);
+            yield return null;
         }
 
-        switchHandle.localRotation = goalRotation; // Ensure final alignment
+        switchHandle.localPosition = endPosition;
+
         if (isOn)
         {
             OnSwitchActivated?.Invoke();
         }
-        else
-        {
-            OnSwitchDeactivated?.Invoke();
-        }
+        
     }
+
     public void SetInteractable(bool value)
     {
         isInInteractable = value;
+    }
+    public override void ShowPrompt()
+    {
+        if (isInInteractable)
+            base.ShowPrompt();
     }
 }

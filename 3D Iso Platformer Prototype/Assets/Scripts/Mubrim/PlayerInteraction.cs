@@ -21,7 +21,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     public FloatingBridge bridgePopper;
 
-    private Interactable nearbyInteractable;
+    [SerializeField] private Interactable nearbyInteractable;
     private OrbPickupHandler heldOrb;
 
     private bool isHoldingOrb = false;
@@ -161,6 +161,7 @@ public class PlayerInteraction : MonoBehaviour
         if (playerMovement != null)
             playerMovement.enabled = false;
 
+        SoundManager.Instance?.PlayOrbPickupSFX();
         Debug.Log("Picked up Light Orb!");
     }
 
@@ -178,6 +179,7 @@ public class PlayerInteraction : MonoBehaviour
         if (bridgePopper != null)
             bridgePopper.ActivateBridge();
 
+        SoundManager.Instance?.PlayOrbPlaceSFX();
         Debug.Log("Placed Light Orb!");
     }
 
