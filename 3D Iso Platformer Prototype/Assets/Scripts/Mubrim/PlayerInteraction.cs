@@ -1,34 +1,41 @@
-﻿/*Handles player interactions including picking up/placing orbs, detecting interactables, 
-entering/exiting mirror rotation mode, and locking movement during interactions.*/
+﻿using UnityEngine;
 
-using UnityEngine;
-
+/// <summary>
+/// Handles player interactions: picking/placing orbs, detecting interactables, 
+/// rotating mirrors, reading notes, and managing movement locking.
+/// </summary>
 public class PlayerInteraction : MonoBehaviour
 {
+    [Header("Interaction Settings")]
     [SerializeField] private float interactionRange = 3f;
-    [SerializeField] private Transform orbHolder;
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private PlayerMovement playerMovement;
-    public FloatingBridge bridgePopper;
+
+    [Header("Orb Settings")]
+    [SerializeField] private Transform orbHolder;
+
+    [Header("Note UI")]
     [SerializeField] private GameObject noteUIPanel;
     [SerializeField] private TMPro.TextMeshProUGUI noteTextUI;
-    private bool isNoteOpen = false;
+
+    [Header("References")]
+    [SerializeField] private PlayerMovement playerMovement;
+    public FloatingBridge bridgePopper;
 
     private Interactable nearbyInteractable;
-    private bool isHoldingOrb = false;
     private OrbPickupHandler heldOrb;
+
+    private bool isHoldingOrb = false;
     private bool orbPlaced = false;
     private bool isLerpingToHolder = false;
-
-    private LightMirror currentMirror = null;
+    private bool isNoteOpen = false;
     private bool isInMirrorRotationMode = false;
+
+    private Vector3 velocity = Vector3.zero;
     private Vector3 lastPosition;
+    private LightMirror currentMirror;
 
     private float mirrorRotationCooldown = 0f;
     private const float enterRotationDelay = 0.2f;
-
-    [SerializeField] private GameObject interactPromptPrefab;
-    private GameObject currentPrompt;
 
     private void Awake()
     {
@@ -36,175 +43,148 @@ public class PlayerInteraction : MonoBehaviour
             playerMovement = GetComponent<PlayerMovement>();
     }
 
-    private Vector3 velocity = Vector3.zero;
-
     private void Update()
     {
         if (isInMirrorRotationMode)
         {
-            mirrorRotationCooldown -= Time.deltaTime;
-
-            if (mirrorRotationCooldown <= 0f && currentMirror != null)
-            {
-                float rotationDir = 0f;
-                if (Input.GetKey(KeyCode.Q)) rotationDir = -1f;
-                if (Input.GetKey(KeyCode.R)) rotationDir = 1f;
-
-                if (rotationDir != 0f)
-                {
-                    currentMirror.RotateMirror(rotationDir);
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                ExitMirrorRotationMode();
-            }
-
+            HandleMirrorRotationMode();
             return;
         }
 
         CheckForInteractable();
+
         if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (isNoteOpen)
-            {
-                CloseNoteUI();
-                return;
-            }
+            HandleInteractionInput();
 
-            if (nearbyInteractable != null)
-            {
-                if (currentPrompt != null)
-                {
-                    Destroy(currentPrompt);
-                    currentPrompt = null;
-                }
-
-                Note note = nearbyInteractable.GetComponent<Note>();
-                if (note != null)
-                {
-                    OpenNoteUI(note.noteText);
-                }
-                else
-                {
-                    nearbyInteractable.Interact();
-                }
-            }
-        }
         if (isLerpingToHolder && heldOrb != null)
-        {
-            heldOrb.transform.position = Vector3.SmoothDamp(
-                heldOrb.transform.position,
-                orbHolder.position,
-                ref velocity,
-                0.15f
-            );
-
-            if (Vector3.Distance(heldOrb.transform.position, orbHolder.position) < 0.05f)
-            {
-                heldOrb.transform.position = orbHolder.position;
-                heldOrb.transform.SetParent(orbHolder);
-                isLerpingToHolder = false;
-
-                if (playerMovement != null)
-                    playerMovement.enabled = true;
-            }
-        }
+            LerpOrbToHolder();
 
         if (isHoldingOrb && heldOrb != null && !isLerpingToHolder)
-        {
-            heldOrb.transform.localRotation = Quaternion.identity; // to prevent spinning
-        }
+            heldOrb.transform.localRotation = Quaternion.identity;
 
         lastPosition = transform.position;
     }
 
-    private void CheckForInteractable()
+    private void HandleInteractionInput()
     {
-        nearbyInteractable = null;
-
-        Collider[] colliders = Physics.OverlapSphere(transform.position + new Vector3(0f, 1f, 0f), interactionRange);
-        foreach (var collider in colliders)
+        if (isNoteOpen)
         {
-            Interactable interactable = collider.GetComponent<Interactable>();
-            if (interactable && interactable.IsInteractable())
-            {
-                nearbyInteractable = interactable;
-
-                if (currentPrompt == null && interactPromptPrefab != null)
-                {
-                    currentPrompt = Instantiate(interactPromptPrefab);
-                }
-
-                if (currentPrompt != null)
-                {
-                    currentPrompt.SetActive(true);
-                    currentPrompt.transform.position = collider.transform.position + Vector3.up * 2f;
-                    currentPrompt.transform.forward = Camera.main.transform.forward;
-                }
-
-                return;
-            }
+            CloseNoteUI();
+            return;
         }
 
-        if (currentPrompt != null)
+        if (nearbyInteractable == null) return;
+
+        if (nearbyInteractable.TryGetComponent(out Note note))
         {
-            currentPrompt.SetActive(false);
+            OpenNoteUI(note.noteText);
+        }
+        else
+        {
+            nearbyInteractable.Interact();
         }
     }
 
+    private void HandleMirrorRotationMode()
+    {
+        mirrorRotationCooldown -= Time.deltaTime;
 
+        if (mirrorRotationCooldown <= 0f && currentMirror != null)
+        {
+            float rotationDir = 0f;
+            if (Input.GetKey(KeyCode.Q)) rotationDir = -1f;
+            if (Input.GetKey(KeyCode.R)) rotationDir = 1f;
+
+            if (rotationDir != 0f)
+                currentMirror.RotateMirror(rotationDir);
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+            ExitMirrorRotationMode();
+    }
+
+    private void CheckForInteractable()
+    {
+        if (nearbyInteractable != null)
+        {
+            nearbyInteractable.HidePrompt();
+            nearbyInteractable = null;
+        }
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position + Vector3.up, interactionRange);
+        foreach (var collider in colliders)
+        {
+            if (collider.TryGetComponent(out Interactable interactable) && interactable.IsInteractable())
+            {
+                nearbyInteractable = interactable;
+                nearbyInteractable.ShowPrompt();
+                break;
+            }
+        }
+    }
+
+    private void LerpOrbToHolder()
+    {
+        heldOrb.transform.position = Vector3.SmoothDamp(
+            heldOrb.transform.position,
+            orbHolder.position,
+            ref velocity,
+            0.15f
+        );
+
+        if (Vector3.Distance(heldOrb.transform.position, orbHolder.position) < 0.05f)
+        {
+            heldOrb.transform.position = orbHolder.position;
+            heldOrb.transform.SetParent(orbHolder);
+            isLerpingToHolder = false;
+
+            if (playerMovement != null)
+                playerMovement.enabled = true;
+        }
+    }
 
     public void PickUpOrb(Transform orbTransform)
     {
-        if (!isHoldingOrb)
+        if (isHoldingOrb) return;
+
+        heldOrb = orbTransform.GetComponent<OrbPickupHandler>();
+        if (heldOrb == null)
         {
-            heldOrb = orbTransform.GetComponent<OrbPickupHandler>();
-            if (heldOrb != null)
-            {
-                heldOrb.transform.SetParent(null);
-                isHoldingOrb = true;
-                isLerpingToHolder = true;
-
-                if (playerMovement != null)
-                    playerMovement.enabled = false;
-
-                Debug.Log("Picked up Light Orb!");
-            }
-            else
-            {
-                Debug.LogWarning("Orb does not have OrbPickupHandler!");
-            }
+            Debug.LogWarning("Tried to pick up orb without OrbPickupHandler.");
+            return;
         }
-    }
-    public bool IsHoldingOrb()
-    {
-        return isHoldingOrb;
+
+        heldOrb.transform.SetParent(null);
+        isHoldingOrb = true;
+        isLerpingToHolder = true;
+
+        if (playerMovement != null)
+            playerMovement.enabled = false;
+
+        Debug.Log("Picked up Light Orb!");
     }
 
     public void PlaceOrb(Vector3 destination)
     {
-        if (isHoldingOrb && heldOrb != null)
-        {
-            heldOrb.transform.SetParent(null);
-            heldOrb.MoveToDestination(destination, moveSpeed);
-            isHoldingOrb = false;
-            orbPlaced = true;
-            heldOrb = null;
-            Debug.Log("Placed Light Orb at destination!");
+        if (!isHoldingOrb || heldOrb == null) return;
 
-            if (bridgePopper != null)
-                bridgePopper.ActivateBridge();
-        }
+        heldOrb.transform.SetParent(null);
+        heldOrb.MoveToDestination(destination, moveSpeed);
+
+        isHoldingOrb = false;
+        orbPlaced = true;
+        heldOrb = null;
+
+        if (bridgePopper != null)
+            bridgePopper.ActivateBridge();
+
+        Debug.Log("Placed Light Orb!");
     }
-
 
     public void EnterMirrorRotationMode(LightMirror mirror)
     {
         currentMirror = mirror;
         isInMirrorRotationMode = true;
-        lastPosition = transform.position;
         mirrorRotationCooldown = enterRotationDelay;
 
         if (playerMovement != null)
@@ -224,43 +204,38 @@ public class PlayerInteraction : MonoBehaviour
         Debug.Log("Exited Mirror Rotation Mode");
     }
 
-    public bool HasPlacedOrb()
+    private void OpenNoteUI(string text)
     {
-        return orbPlaced;
+        if (noteUIPanel == null || noteTextUI == null) return;
+
+        noteUIPanel.SetActive(true);
+        noteUIPanel.transform.localScale = Vector3.one;
+        noteTextUI.text = text;
+        isNoteOpen = true;
+
+        if (playerMovement != null)
+            playerMovement.LockInput = true;
     }
+
+    private void CloseNoteUI()
+    {
+        if (noteUIPanel == null || noteTextUI == null) return;
+
+        noteUIPanel.SetActive(false);
+        noteUIPanel.transform.localScale = Vector3.zero;
+        noteTextUI.text = "";
+        isNoteOpen = false;
+
+        if (playerMovement != null)
+            playerMovement.LockInput = false;
+    }
+
+    public bool IsHoldingOrb() => isHoldingOrb;
+    public bool HasPlacedOrb() => orbPlaced;
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(0f, 1f, 0f), interactionRange);
+        Gizmos.DrawWireSphere(transform.position + Vector3.up, interactionRange);
     }
-
-    void OpenNoteUI(string text)
-    {
-        if (noteUIPanel != null && noteTextUI != null)
-        {
-            noteUIPanel.SetActive(true);
-            noteUIPanel.transform.localScale = Vector3.one; 
-            noteTextUI.text = text;
-            isNoteOpen = true;
-
-            if (playerMovement != null)
-                playerMovement.LockInput = true;
-        }
-    }
-
-    void CloseNoteUI()
-    {
-        if (noteUIPanel != null && noteTextUI != null)
-        {
-            noteUIPanel.SetActive(false);
-            noteUIPanel.transform.localScale = Vector3.zero; 
-            noteTextUI.text = "";
-            isNoteOpen = false;
-
-            if (playerMovement != null)
-                playerMovement.LockInput = false;
-        }
-    }
-
 }

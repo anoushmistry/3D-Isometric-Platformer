@@ -24513,7 +24513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   promptMessage: Press E to interact
-  interactionPromptPrefab: {fileID: 8056783600279311869, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+  interactionPromptPrefab: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
     type: 3}
   offset: {x: 0, y: 1.5, z: 0}
 --- !u!23 &617559279
@@ -26604,7 +26604,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &705773679
@@ -39150,6 +39150,11 @@ MonoBehaviour:
   ladderTop: {fileID: 0}
   ladderBottom: {fileID: 0}
   climbSpeed: 3
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  fadeCanvasGroup: {fileID: 0}
+  fadeDuration: 0.5
 --- !u!114 &1141507912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43451,6 +43456,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ladder New
       objectReference: {fileID: 0}
+    - target: {fileID: 7909633971827804508, guid: b05abc65a8fac1342a775b04b7904afe,
+        type: 3}
+      propertyPath: interactionPromptPrefab
+      value: 
+      objectReference: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+        type: 3}
     - target: {fileID: 8417578907635108229, guid: b05abc65a8fac1342a775b04b7904afe,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -57405,14 +57416,20 @@ PrefabInstance:
       objectReference: {fileID: 1634429833}
     - target: {fileID: 8364677948701993534, guid: b5d7dfbe9bffe214aa96d27b93ab7d5e,
         type: 3}
+      propertyPath: interactionPromptPrefab
+      value: 
+      objectReference: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+        type: 3}
+    - target: {fileID: 8364677948701993534, guid: b5d7dfbe9bffe214aa96d27b93ab7d5e,
+        type: 3}
       propertyPath: OnSwitchActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1839816384}
+      objectReference: {fileID: 0}
     - target: {fileID: 8364677948701993534, guid: b5d7dfbe9bffe214aa96d27b93ab7d5e,
         type: 3}
       propertyPath: OnSwitchDeactivated.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1839816384}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -66494,18 +66511,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 81401859}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1839816384 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3842272328371098690, guid: 0f86989b46c513c4da412a32a2021730,
-    type: 3}
-  m_PrefabInstance: {fileID: 1903488433}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31304cbb059f35543ad899bf7b4d9ca3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1843938832 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6341157129118221819, guid: fd63590e9b9169140a00bbb7229432cc,
@@ -71990,6 +71995,24 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8884974107000920980, guid: 1f838912acad4a2409bc0982d88a7425, type: 3}
+--- !u!1 &2024140291 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4170178654134118014, guid: 6d17e2582eddc424db64a03066bde92a,
+    type: 3}
+  m_PrefabInstance: {fileID: 2132981737}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2024140297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024140291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af328ff4da9b9c44a7e13050b8e6310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2024669969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -75758,12 +75781,16 @@ PrefabInstance:
         type: 3}
       propertyPath: interactionPromptPrefab
       value: 
-      objectReference: {fileID: 8056783600279311869, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+      objectReference: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
         type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4170178654134118014, guid: 6d17e2582eddc424db64a03066bde92a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2024140297}
   m_SourcePrefab: {fileID: 100100000, guid: 6d17e2582eddc424db64a03066bde92a, type: 3}
 --- !u!1001 &2133109941
 PrefabInstance:
@@ -77365,6 +77392,12 @@ PrefabInstance:
       propertyPath: playerInteraction
       value: 
       objectReference: {fileID: 1836027901}
+    - target: {fileID: 2363231278121677888, guid: e2ba5560ba4fe0b4ca3f5cde565721c9,
+        type: 3}
+      propertyPath: interactionPromptPrefab
+      value: 
+      objectReference: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+        type: 3}
     - target: {fileID: 7230725706980909683, guid: e2ba5560ba4fe0b4ca3f5cde565721c9,
         type: 3}
       propertyPath: m_Name
@@ -77586,6 +77619,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6878985623481705920, guid: 6e12b701444a3094ca430b17dcf4e65e,
+        type: 3}
+      propertyPath: interactionPromptPrefab
+      value: 
+      objectReference: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+        type: 3}
     - target: {fileID: 6878985623481705920, guid: 6e12b701444a3094ca430b17dcf4e65e,
         type: 3}
       propertyPath: 'dialogue.sentences.Array.data[1]'
