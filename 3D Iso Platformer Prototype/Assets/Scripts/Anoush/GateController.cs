@@ -7,10 +7,6 @@ public class GateController : MonoBehaviour
     public Vector3 loweredPositionOffset = new Vector3(0, -3f, 0);
     public float dropDuration = 1f;
 
-    [Header("Audio")]
-    public AudioSource gateAudioSource;
-    public AudioClip gateDropSound;
-
     private Vector3 initialPosition;
 
     private void Start()
@@ -26,10 +22,7 @@ public class GateController : MonoBehaviour
 
     private IEnumerator DropGateCoroutine()
     {
-        if (gateAudioSource != null && gateDropSound != null)
-        {
-            gateAudioSource.PlayOneShot(gateDropSound);
-        }
+        SoundManager.Instance?.PlayGateDropSFX();
 
         Vector3 targetPosition = initialPosition + loweredPositionOffset;
         Vector3 startPosition = gateObject.position;

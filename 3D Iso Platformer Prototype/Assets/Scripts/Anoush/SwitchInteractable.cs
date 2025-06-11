@@ -16,10 +16,6 @@ public class SwitchInteractable : Interactable
     public UnityEvent OnSwitchActivated;
     public UnityEvent OnSwitchDeactivated;
 
-    [Header("Audio")]
-    public AudioSource switchAudioSource;
-    public AudioClip switchSound;
-
     [Header("Tutorial Level")]
     [Tooltip("Set this to true if this switch is part of the tutorial level. It will trigger a text fade out when activated.")]
     [SerializeField] private bool IsTutorialLevel;
@@ -53,11 +49,10 @@ public class SwitchInteractable : Interactable
     {
         isInInteractable = false;
 
-        if (switchAudioSource != null && switchSound != null)
-        {
-            switchAudioSource.PlayOneShot(switchSound);
-            yield return new WaitForSeconds(switchSound.length);
-        }
+        SoundManager.Instance.PlayLeverSFX();
+
+        float delay = SoundManager.Instance.leverClip != null ? SoundManager.Instance.leverClip.length : 0.2f;
+        yield return new WaitForSeconds(delay);
 
         Quaternion startRotation = switchHandle.localRotation;
         Quaternion goalRotation = isOn ? targetRotation : initialRotation;

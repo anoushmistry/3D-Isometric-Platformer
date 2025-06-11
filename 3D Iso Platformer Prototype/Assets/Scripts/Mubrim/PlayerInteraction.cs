@@ -20,12 +20,6 @@ public class PlayerInteraction : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerMovement playerMovement;
     public FloatingBridge bridgePopper;
-    
-    [Header("Sound Settings")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip pickupOrbClip;
-    [SerializeField] private AudioClip placeOrbClip;
-
 
     [SerializeField] private Interactable nearbyInteractable;
     private OrbPickupHandler heldOrb;
@@ -167,11 +161,8 @@ public class PlayerInteraction : MonoBehaviour
         if (playerMovement != null)
             playerMovement.enabled = false;
 
-        if (audioSource && pickupOrbClip)
-            audioSource.PlayOneShot(pickupOrbClip);
-
+        SoundManager.Instance?.PlayOrbPickupSFX();
         Debug.Log("Picked up Light Orb!");
-
     }
 
     public void PlaceOrb(Vector3 destination)
@@ -187,12 +178,9 @@ public class PlayerInteraction : MonoBehaviour
 
         if (bridgePopper != null)
             bridgePopper.ActivateBridge();
-        
-        if (audioSource && placeOrbClip)
-            audioSource.PlayOneShot(placeOrbClip);
 
+        SoundManager.Instance?.PlayOrbPlaceSFX();
         Debug.Log("Placed Light Orb!");
-
     }
 
     public void EnterMirrorRotationMode(LightMirror mirror)

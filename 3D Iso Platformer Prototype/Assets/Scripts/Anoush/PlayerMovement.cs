@@ -54,13 +54,6 @@ public class PlayerMovement : MonoBehaviour
     private float lastGroundedSaveTimer = 0f;
     private float saveInterval = 5f;
 
-    [Header("Sound Settings")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip footstepClip;
-    [SerializeField] private AudioClip climbClip;
-    private bool isPlayingFootsteps = false;
-    private bool isPlayingClimb = false;
-
     private void Awake()
     {
         if (Instance)
@@ -83,11 +76,10 @@ public class PlayerMovement : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         controller = GetComponent<CharacterController>();
-        controller.stepOffset = 0.2f; 
+        controller.stepOffset = 0.2f;
         lastGroundedPosition = transform.position;
         animator.stabilizeFeet = true;
     }
-
 
     void Update()
     {
@@ -122,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
         }
-        if(LockInput)
+        if (LockInput)
         {
             animator.SetFloat("Speed", 0f);
         }
@@ -130,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleMovement()
     {
-        if(LockInput)
+        if (LockInput)
         {
             return;
         }
@@ -164,18 +156,13 @@ public class PlayerMovement : MonoBehaviour
 
         bool isWalking = isoMoveDirection.magnitude > 0.1f && isGrounded;
 
-        if (isWalking && !isPlayingFootsteps)
+        if (isWalking)
         {
-            audioSource.clip = footstepClip;
-            audioSource.pitch = 1.5f;
-            audioSource.loop = true;
-            audioSource.Play();
-            isPlayingFootsteps = true;
+            SoundManager.Instance.PlayFootstepLoop();
         }
-        else if (!isWalking && isPlayingFootsteps)
+        else
         {
-            audioSource.Stop();
-            isPlayingFootsteps = false;
+            SoundManager.Instance.StopFootstepLoop();
         }
     }
 
@@ -213,18 +200,13 @@ public class PlayerMovement : MonoBehaviour
 
         bool isClimbingNow = Mathf.Abs(verticalInput) > 0.1f;
 
-        if (isClimbingNow && !isPlayingClimb)
+        if (isClimbingNow)
         {
-            audioSource.clip = climbClip;
-            audioSource.pitch = 1f;
-            audioSource.loop = true;
-            audioSource.Play();
-            isPlayingClimb = true;
+            SoundManager.Instance.PlayClimbLoop();
         }
-        else if (!isClimbingNow && isPlayingClimb)
+        else
         {
-            audioSource.Stop();
-            isPlayingClimb = false;
+            SoundManager.Instance.StopClimbLoop();
         }
 
         if (transform.position.y >= ladderTop.position.y - 0.5f && verticalInput > 0)
@@ -249,9 +231,8 @@ public class PlayerMovement : MonoBehaviour
         transform.position = exitPosition;
         controller.enabled = true;
 
-        audioSource.Stop();
-        isPlayingFootsteps = false;
-        isPlayingClimb = false;
+        SoundManager.Instance.StopClimbLoop();
+        SoundManager.Instance.StopFootstepLoop();
 
         velocity.y = -1f;
     }
