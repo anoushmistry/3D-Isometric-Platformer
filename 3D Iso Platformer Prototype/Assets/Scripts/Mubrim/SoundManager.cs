@@ -49,12 +49,15 @@ public class SoundManager : MonoBehaviour
         {
             case "MainMenu":
                 clipToPlay = mainMenuClip;
+                environmentVolume = 0.1f;
                 break;
             case "Tutorial Level":
                 clipToPlay = tutorialClip;
+                environmentVolume = 0.005f;
                 break;
             case "Level 1 Prototype":
                 clipToPlay = level1Clip;
+                environmentVolume = 0.1f;
                 break;
             case "Level 2 Prototype":
                 clipToPlay = level2Clip;

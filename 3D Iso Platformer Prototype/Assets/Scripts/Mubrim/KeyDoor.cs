@@ -3,8 +3,9 @@ using DG.Tweening;
 
 public class KeyDoor : Interactable
 {
-    [SerializeField] private Transform leftDoor;
-    [SerializeField] private Transform rightDoor;
+    //[SerializeField] private Transform leftDoor;
+    //[SerializeField] private Transform rightDoor;
+    [SerializeField] private GateController gate;
     [SerializeField] private float openDuration = 1.2f;
 
     [SerializeField]
@@ -23,6 +24,7 @@ public class KeyDoor : Interactable
 
             KeyUIController.Instance.HideKeyIcon();
             OpenDoor();
+            gameObject.SetActive(false);
         }
         else
         {
@@ -34,9 +36,10 @@ public class KeyDoor : Interactable
     {
         isOpen = true;
 
+        gate.DropGate();
         // Rotate doors
-        leftDoor.DOLocalRotate(new Vector3(0f, -75f, 0f), openDuration, RotateMode.LocalAxisAdd);
-        rightDoor.DOLocalRotate(new Vector3(0f, 75f, 0f), openDuration, RotateMode.LocalAxisAdd);
+        //leftDoor.DOLocalRotate(new Vector3(0f, -75f, 0f), openDuration, RotateMode.LocalAxisAdd);
+        //rightDoor.DOLocalRotate(new Vector3(0f, 75f, 0f), openDuration, RotateMode.LocalAxisAdd);
 
         // Disable prompt after opening
         if (interactionPromptPrefab != null)

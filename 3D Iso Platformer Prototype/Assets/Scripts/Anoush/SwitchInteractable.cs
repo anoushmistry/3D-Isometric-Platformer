@@ -6,8 +6,9 @@ public class SwitchInteractable : Interactable
 {
     [Header("Switch Rotation")]
     public Transform switchHandle;
-    public Vector3 switchRotationAngle = new Vector3(-45f, 0, 0);
-    public float rotationSpeed = 5f;
+    //public Vector3 switchRotationAngle = new Vector3(-45f, 0, 0);
+    //public float rotationSpeed = 5f;
+    public float pushDownSpeed;
 
     [Header("Interaction Settings")]
     public KeyCode interactKey = KeyCode.E;
@@ -26,15 +27,17 @@ public class SwitchInteractable : Interactable
     [Tooltip("Don't Use or assign this unless it's the tutorial level switch")]
     [SerializeField] private TextFade textFadeComponent;
 
+    [SerializeField] private Vector3 switchOffset;
     private bool isOn = false;
     private bool isInInteractable { get; set; }
-    private Quaternion initialRotation;
-    private Quaternion targetRotation;
+    //private Quaternion initialRotation;
+    //private Quaternion targetRotation;
 
     void Start()
     {
-        initialRotation = switchHandle.localRotation;
-        targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
+        switchAudioSource = GetComponent<AudioSource>();
+        //initialRotation = switchHandle.localRotation;
+        //targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
         isInInteractable = true;
     }
 
@@ -43,43 +46,78 @@ public class SwitchInteractable : Interactable
         if (!isInInteractable) return;
 
         isOn = !isOn;
-        StartCoroutine(RotateSwitchWithSound());
+        StartCoroutine(MoveSwitchDown());
+        //StartCoroutine(RotateSwitchWithSound());
 
         if (IsTutorialLevel && textFadeComponent != null)
             textFadeComponent.FadeOut();
     }
 
-    private IEnumerator RotateSwitchWithSound()
+    //private IEnumerator RotateSwitchWithSound()
+    //{
+    //    isInInteractable = false;
+
+    //    if (switchAudioSource != null && switchSound != null)
+    //    {
+    //        switchAudioSource.PlayOneShot(switchSound);
+    //        yield return new WaitForSeconds(switchSound.length);
+    //    }
+
+    //    Quaternion startRotation = switchHandle.localRotation;
+    //    Quaternion goalRotation = isOn ? targetRotation : initialRotation;
+    //    float t = 0f;
+
+    //    while (t < 1f)
+    //    {
+    //        t += Time.deltaTime * rotationSpeed;
+    //        switchHandle.localRotation = Quaternion.Slerp(startRotation, goalRotation, t);
+    //        yield return null;
+    //    }
+
+    //    switchHandle.localRotation = goalRotation;
+
+    //    if (isOn) OnSwitchActivated?.Invoke();
+    //    else OnSwitchDeactivated?.Invoke();
+
+    //    isInInteractable = true;
+    //}
+    private IEnumerator MoveSwitchDown()
     {
-        isInInteractable = false;
+        isInInteractable = false; // Prevent interaction during motion
+        HidePrompt();
 
         if (switchAudioSource != null && switchSound != null)
         {
             switchAudioSource.PlayOneShot(switchSound);
-            yield return new WaitForSeconds(switchSound.length);
         }
 
-        Quaternion startRotation = switchHandle.localRotation;
-        Quaternion goalRotation = isOn ? targetRotation : initialRotation;
+        Vector3 startPosition = switchHandle.localPosition;
+        Vector3 endPosition = startPosition + switchOffset; // Adjust offset based on model
         float t = 0f;
 
         while (t < 1f)
         {
-            t += Time.deltaTime * rotationSpeed;
-            switchHandle.localRotation = Quaternion.Slerp(startRotation, goalRotation, t);
+            t += Time.deltaTime * pushDownSpeed;
+            switchHandle.localPosition = Vector3.Lerp(startPosition, endPosition, t);
             yield return null;
         }
 
-        switchHandle.localRotation = goalRotation;
+        switchHandle.localPosition = endPosition;
 
-        if (isOn) OnSwitchActivated?.Invoke();
-        else OnSwitchDeactivated?.Invoke();
-
-        isInInteractable = true;
+        if (isOn)
+        {
+            OnSwitchActivated?.Invoke();
+        }
+        
     }
 
     public void SetInteractable(bool value)
     {
         isInInteractable = value;
+    }
+    public override void ShowPrompt()
+    {
+        if (isInInteractable)
+            base.ShowPrompt();
     }
 }
