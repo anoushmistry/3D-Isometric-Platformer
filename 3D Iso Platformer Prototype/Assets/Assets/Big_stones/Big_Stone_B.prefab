@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3974909565451779699}
   - component: {fileID: 6593268489335800963}
   - component: {fileID: 6722088021448128268}
+  - component: {fileID: 5254039138520005729}
   m_Layer: 0
   m_Name: Big_Stone_B
   m_TagString: Untagged
@@ -86,3 +87,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5254039138520005729
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5512432055187651055}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.9922569, y: 5.0739174, z: 3.0296407}
+  m_Center: {x: -0.04574263, y: 0.14585292, z: 0.06750995}
