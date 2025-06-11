@@ -1,78 +1,47 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
 public class GateController : MonoBehaviour
 {
-    public Vector3 openOffset = new Vector3(0, 3f, 0);
-    public float moveSpeed = 2f;
+    public Transform gateObject;
+    public Vector3 loweredPositionOffset = new Vector3(0, -3f, 0);
+    public float dropDuration = 1f;
 
-    private Vector3 closedPosition;
-    private Vector3 targetPosition;
+    [Header("Audio")]
+    public AudioSource gateAudioSource;
+    public AudioClip gateDropSound;
 
-    [SerializeField] private SwitchInteractable attachedSwitchInteractable;
-    [SerializeField] private ParticleSystem smokeBurst;
-    [SerializeField] private Transform smokeSpawnPoint;
+    private Vector3 initialPosition;
 
-    private Coroutine moveCoroutine;
-
-    void Start()
+    private void Start()
     {
-        closedPosition = transform.position;
-        targetPosition = closedPosition;
+        if (gateObject != null)
+            initialPosition = gateObject.position;
     }
 
-    public void OpenDoor()
+    public void DropGate()
     {
-        targetPosition = closedPosition + openOffset;
-        StartDoorMovement(() =>
+        StartCoroutine(DropGateCoroutine());
+    }
+
+    private IEnumerator DropGateCoroutine()
+    {
+        if (gateAudioSource != null && gateDropSound != null)
         {
-            PlaySmokeBurst();
-            attachedSwitchInteractable?.SetInteractable(true);
-        });
-    }
+            gateAudioSource.PlayOneShot(gateDropSound);
+        }
 
-    public void CloseDoor()
-    {
-        targetPosition = closedPosition;
-        StartDoorMovement(() =>
+        Vector3 targetPosition = initialPosition + loweredPositionOffset;
+        Vector3 startPosition = gateObject.position;
+        float timer = 0f;
+
+        while (timer < dropDuration)
         {
-            PlaySmokeBurst();
-            attachedSwitchInteractable?.SetInteractable(true);
-        });
-    }
-
-    private void StartDoorMovement(System.Action onComplete)
-    {
-        if (moveCoroutine != null)
-            StopCoroutine(moveCoroutine);
-
-        moveCoroutine = StartCoroutine(MoveDoor(targetPosition, onComplete));
-    }
-
-    private IEnumerator MoveDoor(Vector3 target, System.Action onComplete)
-    {
-        while (Vector3.Distance(transform.position, target) > 0.01f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+            gateObject.position = Vector3.Lerp(startPosition, targetPosition, timer / dropDuration);
+            timer += Time.deltaTime;
             yield return null;
         }
 
-        transform.position = target;
-
-        onComplete?.Invoke();
-    }
-
-    private void PlaySmokeBurst()
-    {
-        if (smokeBurst != null && smokeSpawnPoint != null)
-        {
-            smokeBurst.transform.position = smokeSpawnPoint.position;
-            smokeBurst.transform.rotation = smokeSpawnPoint.rotation;
-            smokeBurst.Play();
-        }
-        else
-        {
-            Debug.LogWarning("SmokeBurst or SmokeSpawnPoint is not assigned.");
-        }
+        gateObject.position = targetPosition;
     }
 }

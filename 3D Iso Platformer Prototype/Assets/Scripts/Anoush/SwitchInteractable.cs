@@ -16,19 +16,20 @@ public class SwitchInteractable : Interactable
     public UnityEvent OnSwitchActivated;
     public UnityEvent OnSwitchDeactivated;
 
-    private bool isOn = false;
-    private bool playerInRange = false;
-    // [SerializeField] private Transform player;
-    private Quaternion initialRotation;
-    private Quaternion targetRotation;
-    private Coroutine rotateCoroutine;
+    [Header("Audio")]
+    public AudioSource switchAudioSource;
+    public AudioClip switchSound;
 
     [Header("Tutorial Level")]
     [Tooltip("Set this to true if this switch is part of the tutorial level. It will trigger a text fade out when activated.")]
     [SerializeField] private bool IsTutorialLevel;
     [Tooltip("Don't Use or assign this unless it's the tutorial level switch")]
     [SerializeField] private TextFade textFadeComponent;
+
+    private bool isOn = false;
     private bool isInInteractable { get; set; }
+    private Quaternion initialRotation;
+    private Quaternion targetRotation;
 
     void Start()
     {
@@ -36,36 +37,28 @@ public class SwitchInteractable : Interactable
         targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
         isInInteractable = true;
     }
+
     public override void Interact()
     {
-        if (isInInteractable)
-        {
-            isOn = !isOn;
+        if (!isInInteractable) return;
 
-            StartCoroutine(RotateSwitch());
+        isOn = !isOn;
+        StartCoroutine(RotateSwitchWithSound());
 
-            if (IsTutorialLevel)
-                if (textFadeComponent != null)
-                    textFadeComponent.FadeOut();
-                else
-                    Debug.LogWarning("TextFade component is not assigned in the inspector.");
-            //if (isOn)
-            //{
-            //    rotateCoroutine = StartCoroutine(RotateSwitch());
-            //    OnSwitchActivated?.Invoke();
-            //}
-            //else
-            //{
-            //    rotateCoroutine = StartCoroutine(RotateSwitch());
-            //    OnSwitchDeactivated?.Invoke();
-            //}
-        }
-
+        if (IsTutorialLevel && textFadeComponent != null)
+            textFadeComponent.FadeOut();
     }
 
-    private IEnumerator RotateSwitch()
+    private IEnumerator RotateSwitchWithSound()
     {
-        isInInteractable = false; // Prevent further interactions during rotation
+        isInInteractable = false;
+
+        if (switchAudioSource != null && switchSound != null)
+        {
+            switchAudioSource.PlayOneShot(switchSound);
+            yield return new WaitForSeconds(switchSound.length);
+        }
+
         Quaternion startRotation = switchHandle.localRotation;
         Quaternion goalRotation = isOn ? targetRotation : initialRotation;
         float t = 0f;
@@ -74,19 +67,17 @@ public class SwitchInteractable : Interactable
         {
             t += Time.deltaTime * rotationSpeed;
             switchHandle.localRotation = Quaternion.Slerp(startRotation, goalRotation, t);
-            yield return null; // Wait for the next frame
+            yield return null;
         }
 
-        switchHandle.localRotation = goalRotation; // Ensure final alignment
-        if (isOn)
-        {
-            OnSwitchActivated?.Invoke();
-        }
-        else
-        {
-            OnSwitchDeactivated?.Invoke();
-        }
+        switchHandle.localRotation = goalRotation;
+
+        if (isOn) OnSwitchActivated?.Invoke();
+        else OnSwitchDeactivated?.Invoke();
+
+        isInInteractable = true;
     }
+
     public void SetInteractable(bool value)
     {
         isInInteractable = value;

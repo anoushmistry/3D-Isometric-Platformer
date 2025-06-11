@@ -1,12 +1,19 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
 
-    [Header("Environment Sound")]
+    [Header("Audio Setup")]
     public AudioSource environmentSource;
-    [Range(0f, 1f)] public float environmentVolume = 1f;
+    public float environmentVolume = 1f;
+
+    [Header("Scene Clips")]
+    public AudioClip mainMenuClip;
+    public AudioClip tutorialClip;
+    public AudioClip level1Clip;
+    public AudioClip level2Clip;
 
     private void Awake()
     {
@@ -18,35 +25,52 @@ public class SoundManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    public void PlayEnvironmentSound(AudioClip clip)
+    private void Start()
     {
-        if (environmentSource == null || clip == null)
+        PlaySceneMusic(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PlaySceneMusic(scene.name);
+    }
+
+    public void PlaySceneMusic(string sceneName)
+    {
+        if (environmentSource == null) return;
+
+        AudioClip clipToPlay = null;
+
+        switch (sceneName)
         {
-            Debug.LogWarning("Missing AudioSource or AudioClip!");
-            return;
+            case "MainMenu":
+                clipToPlay = mainMenuClip;
+                break;
+            case "Tutorial Level":
+                clipToPlay = tutorialClip;
+                break;
+            case "Level 1 Prototype":
+                clipToPlay = level1Clip;
+                break;
+            case "Level 2 Prototype":
+                clipToPlay = level2Clip;
+                break;
+            default:
+                clipToPlay = null;
+                break;
         }
 
-        if (environmentSource.clip == clip && environmentSource.isPlaying) return;
-
-        environmentSource.clip = clip;
-        environmentSource.loop = true;
-        environmentSource.volume = environmentVolume;
-        environmentSource.Play();
-    }
-
-
-    public void StopEnvironmentSound()
-    {
-        if (environmentSource != null)
+        if (clipToPlay != null && environmentSource.clip != clipToPlay)
+        {
             environmentSource.Stop();
-    }
-
-    public void SetEnvironmentVolume(float volume)
-    {
-        environmentVolume = volume;
-        if (environmentSource != null)
-            environmentSource.volume = volume;
+            environmentSource.clip = clipToPlay;
+            environmentSource.volume = environmentVolume;
+            environmentSource.loop = true;
+            environmentSource.Play();
+        }
     }
 }

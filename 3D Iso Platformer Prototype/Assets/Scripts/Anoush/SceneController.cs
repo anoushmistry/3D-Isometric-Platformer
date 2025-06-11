@@ -5,17 +5,11 @@ using System.Collections;
 
 public class SceneController : MonoBehaviour
 {
-    private string LastPlayerLevel;
     public static SceneController Instance;
 
     [Header("Fade Settings")]
     public Image fadeImageWhite;
     [SerializeField] private float fadeDuration = 1f;
-    [Header("Ambient Clips")]
-    public AudioClip suspenseAmbientClip;
-    public AudioClip natureAmbientClip;
-
-
 
     private bool isFading = false;
 
@@ -29,30 +23,12 @@ public class SceneController : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
-        //LoadLastPlayedLevel(); // Load the last played level on startup
     }
 
     public void LoadScene(string sceneName)
     {
         if (!isFading)
-        {
-            PlayerPrefs.SetString("LastPlayedLevel", sceneName);
-            PlayerPrefs.Save(); // Optional but ensures it's written immediately
             StartCoroutine(FadeAndLoad(sceneName));
-        }
-    }
-    public void LoadLastPlayedLevel()
-    {
-        if (PlayerPrefs.HasKey("LastPlayedLevel"))
-        {
-            string savedScene = PlayerPrefs.GetString("LastPlayedLevel");
-            LoadScene(savedScene);
-        }
-        else
-        {
-            Debug.LogWarning("No last played level found. Loading default scene...");
-            LoadScene("Tutorial Level"); // Or your fallback level
-        }
     }
 
     private IEnumerator FadeAndLoad(string sceneName)
@@ -62,33 +38,16 @@ public class SceneController : MonoBehaviour
         // Fade Out
         yield return StartCoroutine(Fade(1));
 
-        // Load scene
+        // Load scene (replaces current scene)
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         while (!loadOp.isDone)
             yield return null;
-
-        // ✅ Play ambient based on scene
-        if (SoundManager.Instance != null)
-        {
-            string lowerName = sceneName.ToLower();
-
-            if (lowerName.Contains("tutorial level"))
-            {
-                SoundManager.Instance.PlayEnvironmentSound(suspenseAmbientClip);
-            }
-            else
-            {
-                SoundManager.Instance.PlayEnvironmentSound(natureAmbientClip);
-            }
-        }
 
         // Fade In
         yield return StartCoroutine(Fade(0));
 
         isFading = false;
     }
-
-
 
     private IEnumerator Fade(float targetAlpha)
     {
@@ -111,14 +70,5 @@ public class SceneController : MonoBehaviour
         color.a = targetAlpha;
         fadeImageWhite.color = color;
         fadeImageWhite.raycastTarget = targetAlpha > 0;
-    }
-    public void ExitGame()
-    {
-        Debug.Log("Exiting game...");
-        Application.Quit();
-    }
-    public void ClearSavedProgress()
-    {
-        PlayerPrefs.DeleteKey("LastPlayedLevel");
     }
 }
