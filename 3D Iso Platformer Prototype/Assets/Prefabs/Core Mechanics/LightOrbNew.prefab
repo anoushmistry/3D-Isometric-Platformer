@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 105087841517969383}
   - component: {fileID: 8342341043759016663}
   - component: {fileID: 7454214394915749969}
+  - component: {fileID: 6012035229334837757}
   m_Layer: 0
   m_Name: LightOrbNew
   m_TagString: Untagged
@@ -124,6 +125,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   promptMessage: Press E to interact
   interactionPromptPrefab: {fileID: 0}
+--- !u!114 &6012035229334837757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4170178654134118014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af328ff4da9b9c44a7e13050b8e6310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6665574393141761421
 GameObject:
   m_ObjectHideFlags: 0

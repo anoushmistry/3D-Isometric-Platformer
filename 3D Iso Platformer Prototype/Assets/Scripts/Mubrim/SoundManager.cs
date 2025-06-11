@@ -1,84 +1,76 @@
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
 
-    [Header("Audio Sources")]
-    public AudioSource musicSource;
-    public AudioSource musicSourceSecondary; // for crossfade, optional
-    public GameObject sfxSourcePrefab;
-    public int sfxPoolSize = 10;
+    [Header("Audio Setup")]
+    public AudioSource environmentSource;
+    public float environmentVolume = 1f;
 
-    [Header("Volume Settings")]
-    [Range(0f, 1f)] public float musicVolume = 1f;
-    [Range(0f, 1f)] public float sfxVolume = 1f;
-
-    private List<AudioSource> sfxSources = new List<AudioSource>();
-    private int currentSfxIndex = 0;
+    [Header("Scene Clips")]
+    public AudioClip mainMenuClip;
+    public AudioClip tutorialClip;
+    public AudioClip level1Clip;
+    public AudioClip level2Clip;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializeSfxPool();
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void InitializeSfxPool()
+    private void Start()
     {
-        for (int i = 0; i < sfxPoolSize; i++)
+        PlaySceneMusic(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PlaySceneMusic(scene.name);
+    }
+
+    public void PlaySceneMusic(string sceneName)
+    {
+        if (environmentSource == null) return;
+
+        AudioClip clipToPlay = null;
+
+        switch (sceneName)
         {
-            GameObject sfxObj = Instantiate(sfxSourcePrefab, transform);
-            AudioSource src = sfxObj.GetComponent<AudioSource>();
-            src.playOnAwake = false;
-            sfxSources.Add(src);
+            case "MainMenu":
+                clipToPlay = mainMenuClip;
+                break;
+            case "Tutorial Level":
+                clipToPlay = tutorialClip;
+                break;
+            case "Level 1 Prototype":
+                clipToPlay = level1Clip;
+                break;
+            case "Level 2 Prototype":
+                clipToPlay = level2Clip;
+                break;
+            default:
+                clipToPlay = null;
+                break;
         }
-    }
 
-    // === MUSIC ===
-    public void PlayMusic(AudioClip clip, bool loop = true)
-    {
-        if (musicSource.isPlaying && musicSource.clip == clip) return;
-
-        musicSource.clip = clip;
-        musicSource.loop = loop;
-        musicSource.volume = musicVolume;
-        musicSource.Play();
-    }
-
-    public void StopMusic()
-    {
-        musicSource.Stop();
-    }
-
-    public void SetMusicVolume(float volume)
-    {
-        musicVolume = volume;
-        musicSource.volume = musicVolume;
-    }
-
-    // === SOUND EFFECTS ===
-    public void PlaySFX(AudioClip clip, float pitchRandom = 0f)
-    {
-        AudioSource src = sfxSources[currentSfxIndex];
-        currentSfxIndex = (currentSfxIndex + 1) % sfxSources.Count;
-
-        src.clip = clip;
-        src.volume = sfxVolume;
-        src.pitch = 1f + Random.Range(-pitchRandom, pitchRandom);
-        src.Play();
-    }
-
-    public void SetSFXVolume(float volume)
-    {
-        sfxVolume = volume;
+        if (clipToPlay != null && environmentSource.clip != clipToPlay)
+        {
+            environmentSource.Stop();
+            environmentSource.clip = clipToPlay;
+            environmentSource.volume = environmentVolume;
+            environmentSource.loop = true;
+            environmentSource.Play();
+        }
     }
 }

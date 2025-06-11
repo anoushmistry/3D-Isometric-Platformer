@@ -15,6 +15,9 @@ public class ShaderDoorController : Interactable
     private Material dissolveMaterial;
     private Coroutine spawnDelayCoroutine;
     private Coroutine loadSceneCoroutine;
+    [Header("Audio")]
+    [SerializeField] private AudioSource doorAudioSource;
+    [SerializeField] private AudioClip doorBangClip;
 
     private CinemachineImpulseSource impulseSource;
     private bool isInteractable;
@@ -118,8 +121,13 @@ public class ShaderDoorController : Interactable
     }
     void DoorDissolveAppear()
     {
-        //m_animator.Play(m_animIDOpen);
+        if (dissolveMaterial == null)
+        {
+            Debug.LogError("Dissolve material not set!");
+            return;
+        }
 
+        // 🔄 Begin the dissolve animation
         dissolveMaterial.DOFloat(5f, "_NoiseStrength", 2f)
             .SetEase(Ease.InOutSine)
             .OnComplete(() =>
@@ -129,37 +137,37 @@ public class ShaderDoorController : Interactable
 
         float originalY = transform.position.y;
 
-        // Go up by 5 units (relative), rotate, then come back
-        this.transform.DOMoveY(originalY + 5f, 0.5f).SetEase(Ease.InOutSine);
-        this.transform.DORotate(new Vector3(-70, this.transform.rotation.y, this.transform.rotation.z), 0.5f).OnComplete(() =>
-        {
-            this.transform.DORotate(new Vector3(-90, this.transform.rotation.y, this.transform.rotation.z), 0.425f).SetEase(Ease.InOutSine);
-            this.transform.DOMoveY(originalY, 0.425f).SetEase(Ease.InOutSine).OnComplete(() =>
+        // Animate upward and rotate
+        transform.DOMoveY(originalY + 5f, 0.5f).SetEase(Ease.InOutSine);
+        transform.DORotate(new Vector3(-70, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z), 0.5f)
+            .OnComplete(() =>
             {
-                impulseSource.GenerateImpulse(); // Shake!
+                transform.DORotate(new Vector3(-90, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z), 0.425f).SetEase(Ease.InOutSine);
+                transform.DOMoveY(originalY, 0.425f).SetEase(Ease.InOutSine).OnComplete(() =>
+                {
+                    impulseSource?.GenerateImpulse(); // Camera shake
+                });
             });
-        });
 
-
-        if (dissolveMaterial == null)
+        // 🔊 Start delayed door sound
+        if (doorAudioSource != null && doorBangClip != null)
         {
-            Debug.LogError("Dissolve material not set!");
-            return;
+            StartCoroutine(PlayDoorSoundDelayed(1f));
         }
-
-        // Example: Dissolve from 1 to 0 (fully invisible to fully visible)
-
+        else
+        {
+            Debug.LogWarning("Missing door bang audio or source.");
+        }
     }
+
     void DoorDissolveDisappear()
     {
-        //m_animator.Play(m_animIDOpen);
         if (dissolveMaterial == null)
         {
             Debug.LogError("Dissolve material not set!");
             return;
         }
 
-        // Example: Dissolve from 1 to 0 (fully invisible to fully visible)
         dissolveMaterial.DOFloat(0f, "_NoiseStrength", 2f)
             .SetEase(Ease.InOutSine)
             .OnComplete(() =>
@@ -167,6 +175,7 @@ public class ShaderDoorController : Interactable
                 Debug.Log("Dissolve animation complete!");
             });
     }
+
     public void SpeedUpAnim(float speed)
     {
         m_animator.speed = speed;
@@ -206,5 +215,10 @@ public class ShaderDoorController : Interactable
         yield break;
     }
 
+    private IEnumerator PlayDoorSoundDelayed(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        doorAudioSource.PlayOneShot(doorBangClip);
+    }
 
 }
