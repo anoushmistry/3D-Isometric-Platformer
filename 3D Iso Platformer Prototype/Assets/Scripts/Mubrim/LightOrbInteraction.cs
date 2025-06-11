@@ -8,6 +8,7 @@ public class LightOrbInteraction : Interactable
 {
     private bool isPickedUp = false;
 
+    private bool isObstacleTrigger;
     public override void Interact()
     {
         // If already picked up, prevent further interaction

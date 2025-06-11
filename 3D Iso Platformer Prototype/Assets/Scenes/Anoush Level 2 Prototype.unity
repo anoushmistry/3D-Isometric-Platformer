@@ -35032,7 +35032,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4170178654134118014, guid: 6d17e2582eddc424db64a03066bde92a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1811142864}
   m_SourcePrefab: {fileID: 100100000, guid: 6d17e2582eddc424db64a03066bde92a, type: 3}
 --- !u!1001 &1016555339
 PrefabInstance:
@@ -35303,7 +35307,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 5b6ae52ed60097a40af34d118cf9aa50, type: 3}
 --- !u!4 &1016819274 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8825761164345323712, guid: 5b6ae52ed60097a40af34d118cf9aa50,
+  m_CorrespondingSourceObject: {fileID: 8520532306989774365, guid: 5b6ae52ed60097a40af34d118cf9aa50,
     type: 3}
   m_PrefabInstance: {fileID: 1016819273}
   m_PrefabAsset: {fileID: 0}
@@ -38890,17 +38894,9 @@ MonoBehaviour:
     m_Bits: 8
   sphereRadius: 0.5
   castDistance: 0.55
-  slideSpeed: 5
-  isSliding: 0
-  slopeLimit: 45
-  rb: {fileID: 0}
   LockInput: 0
   horizontal: 0
   vertical: 0
-  interactionRange: 3
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 128
   currentEmitter: {fileID: 0}
   startIsoTransformYValue: 0
   isoTransformYValue: 0
@@ -38908,6 +38904,8 @@ MonoBehaviour:
   ladderTop: {fileID: 0}
   ladderBottom: {fileID: 0}
   climbSpeed: 3
+  fadeImageBlack: {fileID: 0}
+  fadeDuration: 0.5
 --- !u!114 &1141507912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59045,6 +59043,24 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1810833019}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1811142858 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4170178654134118014, guid: 6d17e2582eddc424db64a03066bde92a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1015062304}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1811142864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811142858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af328ff4da9b9c44a7e13050b8e6310, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1812779600
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67841,7 +67857,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1573093043}
+  m_Mesh: {fileID: 1323229416}
 --- !u!33 &2039668115
 MeshFilter:
   m_ObjectHideFlags: 10

@@ -21,7 +21,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     public FloatingBridge bridgePopper;
 
-    private Interactable nearbyInteractable;
+    [SerializeField] private Interactable nearbyInteractable;
     private OrbPickupHandler heldOrb;
 
     private bool isHoldingOrb = false;

@@ -135,10 +135,18 @@ public class PlayerMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
         }
+        if(LockInput)
+        {
+            animator.SetFloat("Speed", 0f);
+        }
     }
 
     void HandleMovement()
     {
+        if(LockInput)
+        {
+            return;
+        }
         GroundCheck();
         Vector3 inputDirection = new Vector3(horizontal, 0, vertical).normalized;
         Vector3 isoMoveDirection = inputDirection.ToIsometric(isoTransformYValue);

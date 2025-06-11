@@ -9,6 +9,7 @@ public class FloatingBridge : MonoBehaviour
     public float scaleDuration = 0.5f;
     public float floatHeight = 0.5f;
     public float rotationAmount = 360f;
+    public Vector3 originalScale;
 
     public GameObject smokeParticlePrefab;
 
@@ -21,6 +22,7 @@ public class FloatingBridge : MonoBehaviour
     {
         foreach (GameObject piece in bridgePieces)
         {
+            originalScale = piece.transform.localScale;
             piece.SetActive(true);
             piece.transform.localScale = Vector3.zero;
 
@@ -28,7 +30,7 @@ public class FloatingBridge : MonoBehaviour
             piece.transform.position = originalPos + Vector3.up * floatHeight;
 
             piece.transform.DOMove(originalPos, scaleDuration).SetEase(Ease.OutBounce);
-            piece.transform.DOScale(Vector3.one, scaleDuration).SetEase(Ease.OutBack);
+            piece.transform.DOScale(originalScale, scaleDuration).SetEase(Ease.OutBack);
             piece.transform.DORotate(new Vector3(0, 0, rotationAmount), scaleDuration, RotateMode.FastBeyond360).SetEase(Ease.OutCubic);
 
             // 🌫️ Instantiate smoke around the piece, slightly above ground
