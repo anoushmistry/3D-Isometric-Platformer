@@ -10,6 +10,9 @@ public class GateController : MonoBehaviour
     private Vector3 targetPosition;
 
     [SerializeField] private SwitchInteractable attachedSwitchInteractable;
+    [SerializeField] private ParticleSystem smokeBurst;
+    [SerializeField] private Transform smokeSpawnPoint;
+
     private Coroutine moveCoroutine;
 
     void Start()
@@ -23,6 +26,7 @@ public class GateController : MonoBehaviour
         targetPosition = closedPosition + openOffset;
         StartDoorMovement(() =>
         {
+            PlaySmokeBurst();
             attachedSwitchInteractable?.SetInteractable(true);
         });
     }
@@ -32,6 +36,7 @@ public class GateController : MonoBehaviour
         targetPosition = closedPosition;
         StartDoorMovement(() =>
         {
+            PlaySmokeBurst();
             attachedSwitchInteractable?.SetInteractable(true);
         });
     }
@@ -55,5 +60,19 @@ public class GateController : MonoBehaviour
         transform.position = target;
 
         onComplete?.Invoke();
+    }
+
+    private void PlaySmokeBurst()
+    {
+        if (smokeBurst != null && smokeSpawnPoint != null)
+        {
+            smokeBurst.transform.position = smokeSpawnPoint.position;
+            smokeBurst.transform.rotation = smokeSpawnPoint.rotation;
+            smokeBurst.Play();
+        }
+        else
+        {
+            Debug.LogWarning("SmokeBurst or SmokeSpawnPoint is not assigned.");
+        }
     }
 }
