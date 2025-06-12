@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,10 +17,6 @@ public class SwitchInteractable : Interactable
     public UnityEvent OnSwitchActivated;
     public UnityEvent OnSwitchDeactivated;
 
-    [Header("Audio")]
-    public AudioSource switchAudioSource;
-    public AudioClip switchSound;
-
     [Header("Tutorial Level")]
     [Tooltip("Set this to true if this switch is part of the tutorial level. It will trigger a text fade out when activated.")]
     [SerializeField] private bool IsTutorialLevel;
@@ -35,9 +31,6 @@ public class SwitchInteractable : Interactable
 
     void Start()
     {
-        switchAudioSource = GetComponent<AudioSource>();
-        //initialRotation = switchHandle.localRotation;
-        //targetRotation = Quaternion.Euler(switchRotationAngle) * initialRotation;
         isInInteractable = true;
     }
 
@@ -86,14 +79,7 @@ public class SwitchInteractable : Interactable
         isInInteractable = false; // Prevent interaction during motion
         HidePrompt();
 
-        if (switchAudioSource != null && switchSound != null)
-        {
-            switchAudioSource.PlayOneShot(switchSound);
-        }
-        //SoundManager.Instance.PlayLeverSFX();
-
-        //float delay = SoundManager.Instance.leverClip != null ? SoundManager.Instance.leverClip.length : 0.2f;
-        // yield return new WaitForSeconds(delay);
+        SoundManager.Instance?.PlayLeverSFX();
 
         Vector3 startPosition = switchHandle.localPosition;
         Vector3 endPosition = startPosition + switchOffset; // Adjust offset based on model

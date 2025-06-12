@@ -19,6 +19,9 @@ public class ShaderDoorController : Interactable
     public bool isDestinationDoor;
     public bool requiresOrbActivation;
 
+    [Header("Prompt Settings")]
+    public Transform promptSpawnPoint;
+
     private void Start()
     {
         impulseSource = GetComponent<CinemachineImpulseSource>();
@@ -35,6 +38,46 @@ public class ShaderDoorController : Interactable
             isInteractable = true;
         }
     }
+
+    public override void ShowPrompt()
+    {
+        if (interactionPromptPrefab == null)
+            return;
+
+        // Prevent multiple prompts for this door
+        if (GameObject.Find("__ShaderDoorPrompt") != null)
+            return;
+
+        Vector3 spawnPosition = GetComponent<Collider>().bounds.center + Vector3.up * 1.5f;
+
+        if (Camera.main != null)
+        {
+            Vector3 directionToCamera = (Camera.main.transform.position - spawnPosition).normalized;
+            spawnPosition += directionToCamera * 1.5f; 
+        }
+
+        spawnPosition += Vector3.up * 0.5f;
+
+        GameObject instance = Instantiate(interactionPromptPrefab, spawnPosition, Quaternion.identity);
+        instance.name = "__ShaderDoorPrompt"; 
+        interactionPromptPrefab.SetActive(true);
+
+        if (Camera.main != null)
+        {
+            Vector3 camEuler = Camera.main.transform.eulerAngles;
+            instance.transform.rotation = Quaternion.Euler(camEuler.x, camEuler.y, 0f);
+        }
+    }
+
+
+    public override void HidePrompt()
+    {
+        GameObject prompt = GameObject.Find("__ShaderDoorPrompt");
+        if (prompt != null)
+            Destroy(prompt);
+    }
+
+
 
     public override void Interact()
     {
@@ -82,11 +125,6 @@ public class ShaderDoorController : Interactable
         }
     }
 
-    public override void ShowPrompt()
-    {
-        base.ShowPrompt();
-    }
-
     private IEnumerator SpawnDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -119,7 +157,6 @@ public class ShaderDoorController : Interactable
                 });
             });
 
-        // 🔊 Start delayed sound from SoundManager
         StartCoroutine(PlayDoorSoundDelayed(1f));
     }
 
@@ -133,6 +170,7 @@ public class ShaderDoorController : Interactable
 
         dissolveMaterial.DOFloat(0f, "_NoiseStrength", 2f)
             .SetEase(Ease.InOutSine);
+        SoundManager.Instance?.PlayPortalSFX();
     }
 
     public void SpeedUpAnim(float speed)
