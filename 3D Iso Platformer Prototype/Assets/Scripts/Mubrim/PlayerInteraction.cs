@@ -103,7 +103,6 @@ public class PlayerInteraction : MonoBehaviour
                 currentMirror.RotateMirror(rotationDir);
         }
 
-        // Handle looping sound
         if (rotating)
             SoundManager.Instance?.PlayMirrorRotateLoop();
         else
@@ -210,6 +209,9 @@ public class PlayerInteraction : MonoBehaviour
 
         if (playerMovement != null)
             playerMovement.enabled = false;
+        Animator anim = playerMovement.GetComponentInChildren<Animator>();
+        if (anim != null)
+            anim.SetFloat("Speed", 0f); 
 
         Debug.Log("Entered Mirror Rotation Mode");
     }
