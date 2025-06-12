@@ -198,6 +198,7 @@ public class PlayerInteraction : MonoBehaviour
     public void ExitMirrorRotationMode()
     {
         isInMirrorRotationMode = false;
+        currentMirror.EndMirrorInteraction();
         currentMirror = null;
 
         if (playerMovement != null)

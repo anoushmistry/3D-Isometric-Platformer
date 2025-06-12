@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         controller = GetComponent<CharacterController>();
-        controller.stepOffset = 0.2f;
+        //controller.stepOffset = 0.2f;
         lastGroundedPosition = transform.position;
         animator.stabilizeFeet = true;
     }
@@ -173,6 +173,19 @@ public class PlayerMovement : MonoBehaviour
     void GroundCheck()
     {
         isGrounded = controller.isGrounded;
+
+
+        //RaycastHit hit;
+        //if (controller.isGrounded)
+        //{
+        //    Vector3 rayOrigin = transform.position + Vector3.up * 0.1f; // Slightly above feet to avoid self-hit
+        //    if (Physics.Raycast(rayOrigin, Vector3.down, out hit, 1f))
+        //    {
+        //        GameObject standingOn = hit.collider.gameObject;
+        //        Debug.Log("Standing on: " + standingOn.name);
+        //    }
+        //}
+
     }
 
     public void StickToLadder(Transform ladder)
@@ -204,13 +217,17 @@ public class PlayerMovement : MonoBehaviour
 
         bool isClimbingNow = Mathf.Abs(verticalInput) > 0.1f;
 
-        if (isClimbingNow)
+        if (SoundManager.Instance != null)
         {
-            SoundManager.Instance.PlayClimbLoop();
-        }
-        else
-        {
-            SoundManager.Instance.StopClimbLoop();
+            if (isClimbingNow)
+            {
+                SoundManager.Instance.PlayClimbLoop();
+            }
+            else
+            {
+                SoundManager.Instance.StopClimbLoop();
+            }
+
         }
 
         if (transform.position.y >= ladderTop.position.y - 0.5f && verticalInput > 0)
@@ -235,8 +252,11 @@ public class PlayerMovement : MonoBehaviour
         transform.position = exitPosition;
         controller.enabled = true;
 
-        SoundManager.Instance.StopClimbLoop();
-        SoundManager.Instance.StopFootstepLoop();
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.StopClimbLoop();
+            SoundManager.Instance.StopFootstepLoop();
+        }  
 
         velocity.y = -1f;
     }

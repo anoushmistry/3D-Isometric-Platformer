@@ -42,6 +42,8 @@ public class SceneController : MonoBehaviour
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         while (!loadOp.isDone)
             yield return null;
+        PlayerPrefs.SetString("SavedLevel", sceneName);
+        PlayerPrefs.Save();
 
         // Fade In
         yield return StartCoroutine(Fade(0));
@@ -70,5 +72,16 @@ public class SceneController : MonoBehaviour
         color.a = targetAlpha;
         fadeImageWhite.color = color;
         fadeImageWhite.raycastTarget = targetAlpha > 0;
+    }
+    public void LoadSavedScene()
+    {
+        if(!PlayerPrefs.HasKey("SavedLevel"))
+        {
+            Debug.LogWarning("No saved scene found. Loading default scene.");
+            LoadScene("Tutorial Level"); // Replace with your default scene name
+            return;
+        }
+        string savedScene = PlayerPrefs.GetString("SavedLevel");
+        LoadScene(savedScene);
     }
 }

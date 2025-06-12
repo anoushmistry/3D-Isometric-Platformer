@@ -8,6 +8,7 @@ public class LightEmitter : MonoBehaviour
 
     private LineRenderer lineRenderer;
     private bool isInteracting = false;
+    private bool receiverTriggered;
 
     void Start()
     {
@@ -18,10 +19,10 @@ public class LightEmitter : MonoBehaviour
     {
         FireLaser();
 
-        if (isInteracting)
-        {
-            RotateLaser();
-        }
+        //if (isInteracting)
+        //{
+        //    RotateLaser();
+        //}
     }
 
     void FireLaser()
@@ -50,9 +51,10 @@ public class LightEmitter : MonoBehaviour
                 Vector3 reflectDirection = Vector3.Reflect(direction, hit.normal);
                 CastLaser(hit.point, reflectDirection, reflections + 1);
             }
-            else if (hit.collider.CompareTag("LightReceiver"))
+            else if (hit.collider.CompareTag("LightReceiver") && !receiverTriggered)
             {
                 hit.collider.GetComponent<LightReceiver>().Activate();
+                receiverTriggered = true;
             }
         }
         else

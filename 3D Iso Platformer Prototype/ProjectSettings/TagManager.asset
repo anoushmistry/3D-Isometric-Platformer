@@ -10,6 +10,7 @@ TagManager:
   - Room
   - CameraChange
   - Ladder
+  - LightReceiver
   layers:
   - Default
   - TransparentFX

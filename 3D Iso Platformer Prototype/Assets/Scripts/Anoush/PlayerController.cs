@@ -84,7 +84,8 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("CameraChange"))
         {
             float cameraChangeAngle = other.GetComponent<CameraAngleChangeComponent>().GetCameraAngleChangeValue();
-            SetCameraAngle(cameraChangeAngle);
+            float rotationDuration = other.GetComponent<CameraAngleChangeComponent>().GetDuration();
+            SetCameraAngle(cameraChangeAngle, rotationDuration);
         }
         if(other.CompareTag("Respawn"))
         {
@@ -135,7 +136,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("DelayCameraAngleChange started");
 
        // gameObject.GetComponent<PlayerMovement>().SetCameraAngle(angle);
-       SetCameraAngle(angle);
+       SetCameraAngle(angle, 3f);
 
         Debug.Log("SetCameraAngle called");
 
@@ -188,10 +189,10 @@ public class PlayerController : MonoBehaviour
         Vector3 direction = transform.forward * interactDistance;
         Gizmos.DrawRay(origin, direction);
     }
-    public void SetCameraAngle(float value)
+    public void SetCameraAngle(float value, float duration)
     {
         Vector3 currentRotation = PlayerMovement.Instance.cinemachineVirtualCamera.transform.eulerAngles;
         Vector3 targetRotation = new Vector3(currentRotation.x, value, currentRotation.z);
-        PlayerMovement.Instance.cinemachineVirtualCamera.transform.DORotate(targetRotation, 3f).SetEase(Ease.OutSine);
+        PlayerMovement.Instance.cinemachineVirtualCamera.transform.DORotate(targetRotation, duration).SetEase(Ease.OutSine);
     }
 }
