@@ -35,7 +35,7 @@ public class TriggerObstacle : MonoBehaviour
         yield return new WaitForSeconds(1f); // Optional delay before animation starts
 
         // Delay the sound separately
-        StartCoroutine(DelayedFallingTreeSound(1.5f));
+        StartCoroutine(DelayedFallingTreeSound(1.0f));
 
         Quaternion startRotation = obstacle.rotation;
         float elapsed = 0f;
