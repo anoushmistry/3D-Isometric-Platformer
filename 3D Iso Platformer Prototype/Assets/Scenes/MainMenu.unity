@@ -844,10 +844,12 @@ MonoBehaviour:
   footstepClip: {fileID: 8300000, guid: f7270b281b0f1f542ba734a45cdaedd3, type: 3}
   climbClip: {fileID: 8300000, guid: b711e1fd2bfe06c4b96f176f386bf142, type: 3}
   leverClip: {fileID: 8300000, guid: 70fddae8a8e8dbe4c917cdd526473c56, type: 3}
-  gateDropClip: {fileID: 8300000, guid: e0af76f4e974e134a9acacca3e260478, type: 3}
+  gateDropClip: {fileID: 8300000, guid: 5f0a53161def5024d9efd9cdcb0ca758, type: 3}
   doorBangClip: {fileID: 8300000, guid: 1699e70ef16a47f4c8f9d247aa780974, type: 3}
   orbPickupClip: {fileID: 8300000, guid: 9e6bfaa860faa9f4d88a29bce83973da, type: 3}
   orbPlaceClip: {fileID: 8300000, guid: 9b53d9b5c81c5f644be9b2f9f5289804, type: 3}
+  fallingTreeClip: {fileID: 8300000, guid: fa6fd7d0b93da8041ba42015bf654c8a, type: 3}
+  portalClip: {fileID: 8300000, guid: 679029b6d07e8ca4fb2996791adeb1a8, type: 3}
   footstepSource: {fileID: 248602524}
   climbSource: {fileID: 1578181499}
   mainMenuClip: {fileID: 8300000, guid: 4a8fe4ea7a78ed146bb04b0264f916f9, type: 3}

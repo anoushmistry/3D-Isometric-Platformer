@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
@@ -6,8 +6,8 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance;
 
     [Header("Audio Sources")]
-    public AudioSource environmentSource; // Looped ambient music
-    public AudioSource sfxSource;         // One-shot sound effects
+    public AudioSource environmentSource;
+    public AudioSource sfxSource;
 
     [Header("Volume Controls")]
     [Range(0f, 1f)] public float musicVolume = 1f;
@@ -21,6 +21,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip doorBangClip;
     public AudioClip orbPickupClip;
     public AudioClip orbPlaceClip;
+    public AudioClip fallingTreeClip;
+    public AudioClip portalClip;
 
     [Header("SFX Sources")]
     public AudioSource footstepSource;
@@ -76,7 +78,7 @@ public class SoundManager : MonoBehaviour
             environmentSource.volume = musicVolume;
             environmentSource.loop = true;
             environmentSource.Play();
-            ApplyVolumes(); // Ensure volume is applied even if clips change
+            ApplyVolumes();
         }
     }
 
@@ -137,6 +139,11 @@ public class SoundManager : MonoBehaviour
         if (climbSource != null && climbSource.isPlaying)
             climbSource.Stop();
     }
+    public void PlayPortalSFX() 
+    {
+        if (portalClip == null || sfxSource == null) return;
+        sfxSource.PlayOneShot(portalClip, sfxVolume);
+    }
 
     public void PlayOrbPickupSFX()
     {
@@ -148,6 +155,12 @@ public class SoundManager : MonoBehaviour
     {
         if (orbPlaceClip == null || sfxSource == null) return;
         sfxSource.PlayOneShot(orbPlaceClip, sfxVolume);
+    }
+
+    public void PlayFallingTreeSFX() // 🔊 New Method
+    {
+        if (fallingTreeClip == null || sfxSource == null) return;
+        sfxSource.PlayOneShot(fallingTreeClip, sfxVolume);
     }
 
     public void SetEnvironmentVolume(float volume)

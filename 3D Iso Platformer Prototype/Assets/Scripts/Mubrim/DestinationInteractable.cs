@@ -7,19 +7,17 @@ using UnityEngine;
 public class DestinationInteractable : Interactable
 {
     private bool isOrbPlaced = false;
-
     private PlayerInteraction playerInteraction;
 
     [SerializeField] private Vector3 offset;
+
+    private GameObject customPromptInstance;
+
     private void Start()
     {
         playerInteraction = FindObjectOfType<PlayerInteraction>();
     }
 
-    /// <summary>
-    /// Called when the player interacts with this pedestal.
-    /// If conditions are met, places the orb at this location.
-    /// </summary>
     public override void Interact()
     {
         if (isOrbPlaced || playerInteraction == null || !playerInteraction.IsHoldingOrb())
@@ -31,25 +29,41 @@ public class DestinationInteractable : Interactable
         HidePrompt();
     }
 
-    /// <summary>
-    /// Checks whether this pedestal is currently valid for interaction.
-    /// Only interactable if the player is holding an orb and none is placed yet.
-    /// </summary>
     public override bool IsInteractable()
     {
         return !isOrbPlaced && playerInteraction != null && playerInteraction.IsHoldingOrb();
     }
 
-    /// <summary>
-    /// Shows the interaction prompt only if this pedestal is currently interactable.
-    /// </summary>
     public override void ShowPrompt()
     {
-        if (IsInteractable())
-            base.ShowPrompt();
+        if (!IsInteractable() || interactionPromptPrefab == null || customPromptInstance != null)
+            return;
+
+        Vector3 spawnPosition = GetComponent<Collider>().bounds.center;
+
+        if (Camera.main != null)
+        {
+            Vector3 directionToCamera = (Camera.main.transform.position - spawnPosition).normalized;
+            spawnPosition += directionToCamera * 2f; // 2 units toward the camera
+        }
+
+        customPromptInstance = Instantiate(interactionPromptPrefab, spawnPosition, Quaternion.identity);
+        customPromptInstance.name = "__OrbPrompt";
+        interactionPromptPrefab.SetActive(true);
+
+        if (Camera.main != null)
+        {
+            Vector3 camEuler = Camera.main.transform.eulerAngles;
+            customPromptInstance.transform.rotation = Quaternion.Euler(camEuler.x, camEuler.y, 0f);
+        }
     }
+
     public override void HidePrompt()
     {
-        base.HidePrompt();
+        if (customPromptInstance != null)
+        {
+            Destroy(customPromptInstance);
+            customPromptInstance = null;
+        }
     }
 }

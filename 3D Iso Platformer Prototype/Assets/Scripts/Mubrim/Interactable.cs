@@ -24,21 +24,28 @@ public abstract class Interactable : MonoBehaviour
     }
 
     public virtual void ShowPrompt()
+{
+    if (interactionPromptPrefab == null || currentPromptInstance != null)
+        return;
+
+    Vector3 spawnPosition = GetComponent<Collider>().bounds.center + Vector3.up * 1.5f;
+
+    if (mainCamera != null)
     {
-        if (interactionPromptPrefab == null || currentPromptInstance != null)
-            return;
-
-        // Position prompt slightly above the object's center
-        Vector3 spawnPosition = GetComponent<Collider>().bounds.center + Vector3.up * 3f;
-        currentPromptInstance = Instantiate(interactionPromptPrefab, spawnPosition, Quaternion.identity);
-        interactionPromptPrefab.SetActive(true);
-
-        if (mainCamera != null)
-        {
-            Vector3 camEuler = mainCamera.transform.eulerAngles;
-            currentPromptInstance.transform.rotation = Quaternion.Euler(camEuler.x, camEuler.y, 0f);
-        }
+        Vector3 directionToCamera = (mainCamera.transform.position - spawnPosition).normalized;
+        spawnPosition += directionToCamera * 1f;
     }
+
+    currentPromptInstance = Instantiate(interactionPromptPrefab, spawnPosition, Quaternion.identity);
+    interactionPromptPrefab.SetActive(true);
+
+    if (mainCamera != null)
+    {
+        Vector3 camEuler = mainCamera.transform.eulerAngles;
+        currentPromptInstance.transform.rotation = Quaternion.Euler(camEuler.x, camEuler.y, 0f);
+    }
+}
+
 
     public virtual void HidePrompt()
     {
