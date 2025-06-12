@@ -127,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (LockInput)
         {
+            animator?.SetFloat("Speed", 0f);
             return;
         }
         GroundCheck();
