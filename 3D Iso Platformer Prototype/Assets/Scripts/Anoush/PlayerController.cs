@@ -37,7 +37,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-       // fadeImage = SceneController.Instance.fadeImageBlack;
+        LockCursor();
+        // fadeImage = SceneController.Instance.fadeImageBlack;
         //player = this.gameObject;
         //playerCollider = player.GetComponent<Collider>();
     }
@@ -194,5 +195,17 @@ public class PlayerController : MonoBehaviour
         Vector3 currentRotation = PlayerMovement.Instance.cinemachineVirtualCamera.transform.eulerAngles;
         Vector3 targetRotation = new Vector3(currentRotation.x, value, currentRotation.z);
         PlayerMovement.Instance.cinemachineVirtualCamera.transform.DORotate(targetRotation, duration).SetEase(Ease.OutSine);
+    }
+    public void LockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked; // Locks to center of screen
+        Cursor.visible = false; // Hides the cursor
+    }
+
+    // Unlock and show the cursor
+    public void UnlockCursor()
+    {
+        Cursor.lockState = CursorLockMode.None; // Unlocks the cursor
+        Cursor.visible = true; // Shows the cursor
     }
 }

@@ -159,7 +159,7 @@ public class CameraCutsceneController : MonoBehaviour
         Rect startMain = new Rect(0f, 0f, 1f, 1f);
         Rect endMain = new Rect(0f, 0f, 0.5f, 1f);
 
-        Rect startObjective = new Rect(1f, 0f, 0f, 1f);
+        Rect startObjective = new Rect(1f, 0f, 0.0f, 1f);
         Rect endObjective = new Rect(0.5f, 0f, 0.5f, 1f);
 
         objectiveCamera.enabled = true;
@@ -168,8 +168,11 @@ public class CameraCutsceneController : MonoBehaviour
         {
             float t = timer / duration;
 
-            mainCamera.rect = LerpRect(startMain, endMain, t);
-            objectiveCamera.rect = LerpRect(startObjective, endObjective, t);
+            mainCamera.rect = LerpRectSafe(startMain, endMain, t);
+            //objectiveCamera.rect = LerpRect(startObjective, endObjective, t);
+            Rect rect = LerpRectSafe(startObjective, endObjective, t);
+            rect.width = Mathf.Max(0.01f, rect.width); // avoid zero width
+            objectiveCamera.rect = rect;
 
             timer += Time.deltaTime;
             yield return null;
@@ -179,13 +182,29 @@ public class CameraCutsceneController : MonoBehaviour
         objectiveCamera.rect = endObjective;
     }
 
-    private Rect LerpRect(Rect from, Rect to, float t)
+    //private Rect LerpRect(Rect from, Rect to, float t)
+    //{
+    //    return new Rect(
+    //        Mathf.Lerp(from.x, to.x, t),
+    //        Mathf.Lerp(from.y, to.y, t),
+    //        Mathf.Lerp(from.width, to.width, t),
+    //        Mathf.Lerp(from.height, to.height, t)
+    //    );
+    //}
+    private Rect LerpRectSafe(Rect from, Rect to, float t)
     {
+        float width = Mathf.Lerp(from.width, to.width, t);
+        float height = Mathf.Lerp(from.height, to.height, t);
+
+        // Clamp minimum values
+        width = Mathf.Max(width, 0.01f);
+        height = Mathf.Max(height, 0.01f);
+
         return new Rect(
             Mathf.Lerp(from.x, to.x, t),
             Mathf.Lerp(from.y, to.y, t),
-            Mathf.Lerp(from.width, to.width, t),
-            Mathf.Lerp(from.height, to.height, t)
+            width,
+            height
         );
     }
     public void AnimateCloseSplitViewCoroutine()
@@ -202,14 +221,14 @@ public class CameraCutsceneController : MonoBehaviour
         Rect endMain = new Rect(0f, 0f, 1f, 1f);
 
         Rect startObjective = new Rect(0.5f, 0f, 0.5f, 1f);
-        Rect endObjective = new Rect(1f, 0f, 0f, 1f); // Slide right offscreen
+        Rect endObjective = new Rect(1f, 0f, 0.0f, 1f); // Slide right offscreen
 
         while (timer < duration)
         {
             float t = timer / duration;
 
-            mainCamera.rect = LerpRect(startMain, endMain, t);
-            objectiveCamera.rect = LerpRect(startObjective, endObjective, t);
+            mainCamera.rect = LerpRectSafe(startMain, endMain, t);
+            objectiveCamera.rect = LerpRectSafe(startObjective, endObjective, t);
 
             timer += Time.deltaTime;
             yield return null;
