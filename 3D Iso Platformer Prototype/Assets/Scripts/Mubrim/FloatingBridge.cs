@@ -13,6 +13,13 @@ public class FloatingBridge : MonoBehaviour
 
     public GameObject smokeParticlePrefab;
 
+    private SoundManager soundManager;
+
+    private void Awake()
+    {
+        soundManager = SoundManager.Instance;
+    }
+
     public void ActivateBridge()
     {
         StartCoroutine(AnimateBridgePieces());
@@ -33,12 +40,15 @@ public class FloatingBridge : MonoBehaviour
             piece.transform.DOScale(originalScale, scaleDuration).SetEase(Ease.OutBack);
             piece.transform.DORotate(new Vector3(0, 0, rotationAmount), scaleDuration, RotateMode.FastBeyond360).SetEase(Ease.OutCubic);
 
-            // 🌫️ Instantiate smoke around the piece, slightly above ground
+            // Play 3D thud sound
+            if (soundManager != null)
+                soundManager.PlayBridgeThud(originalPos);
+
             if (smokeParticlePrefab != null)
             {
-                Vector3 particlePos = originalPos + new Vector3(0, 0.25f, 0); // Slightly up
+                Vector3 particlePos = originalPos + new Vector3(0, 0.25f, 0);
                 GameObject smoke = Instantiate(smokeParticlePrefab, particlePos, Quaternion.identity);
-                smoke.transform.localScale = Vector3.one * 1.5f; // Scale up smoke size if needed
+                smoke.transform.localScale = Vector3.one * 1.5f;
                 Destroy(smoke, 2f);
             }
 

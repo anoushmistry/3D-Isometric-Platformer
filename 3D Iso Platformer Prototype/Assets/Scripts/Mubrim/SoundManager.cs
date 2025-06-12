@@ -8,6 +8,9 @@ public class SoundManager : MonoBehaviour
     [Header("Audio Sources")]
     public AudioSource environmentSource;
     public AudioSource sfxSource;
+    public AudioSource footstepSource;
+    public AudioSource climbSource;
+    public AudioSource mirrorRotateSource;
 
     [Header("Volume Controls")]
     [Range(0f, 1f)] public float musicVolume = 1f;
@@ -23,10 +26,10 @@ public class SoundManager : MonoBehaviour
     public AudioClip orbPlaceClip;
     public AudioClip fallingTreeClip;
     public AudioClip portalClip;
-
-    [Header("SFX Sources")]
-    public AudioSource footstepSource;
-    public AudioSource climbSource;
+    public AudioClip keyPickupClip;
+    public AudioClip mirrorRotateClip;
+    public AudioClip bridgeThudClip;
+    public AudioClip bridgeMoveClip;
 
     [Header("Scene Clips")]
     public AudioClip mainMenuClip;
@@ -81,6 +84,11 @@ public class SoundManager : MonoBehaviour
             environmentSource.Play();
             ApplyVolumes();
         }
+    }
+    public void PlayBridgeMoveSFX(Vector3 position)
+    {
+        if (bridgeMoveClip == null) return;
+        AudioSource.PlayClipAtPoint(bridgeMoveClip, position, sfxVolume);
     }
 
     public void PlaySFX(AudioClip clip)
@@ -140,7 +148,8 @@ public class SoundManager : MonoBehaviour
         if (climbSource != null && climbSource.isPlaying)
             climbSource.Stop();
     }
-    public void PlayPortalSFX() 
+
+    public void PlayPortalSFX()
     {
         if (portalClip == null || sfxSource == null) return;
         sfxSource.PlayOneShot(portalClip, sfxVolume);
@@ -158,10 +167,38 @@ public class SoundManager : MonoBehaviour
         sfxSource.PlayOneShot(orbPlaceClip, sfxVolume);
     }
 
-    public void PlayFallingTreeSFX() 
+    public void PlayKeyPickupSFX()
+    {
+        if (keyPickupClip == null || sfxSource == null) return;
+        sfxSource.PlayOneShot(keyPickupClip, sfxVolume);
+    }
+
+    public void PlayFallingTreeSFX()
     {
         if (fallingTreeClip == null || sfxSource == null) return;
         sfxSource.PlayOneShot(fallingTreeClip, sfxVolume);
+    }
+
+    public void PlayMirrorRotateLoop()
+    {
+        if (mirrorRotateClip == null || mirrorRotateSource == null || mirrorRotateSource.isPlaying) return;
+
+        mirrorRotateSource.clip = mirrorRotateClip;
+        mirrorRotateSource.loop = true;
+        mirrorRotateSource.volume = sfxVolume;
+        mirrorRotateSource.Play();
+    }
+
+    public void StopMirrorRotateLoop()
+    {
+        if (mirrorRotateSource != null && mirrorRotateSource.isPlaying)
+            mirrorRotateSource.Stop();
+    }
+
+    public void PlayBridgeThud(Vector3 position)
+    {
+        if (bridgeThudClip == null) return;
+        AudioSource.PlayClipAtPoint(bridgeThudClip, position, sfxVolume);
     }
 
     public void SetEnvironmentVolume(float volume)
@@ -187,6 +224,7 @@ public class SoundManager : MonoBehaviour
     {
         if (footstepSource != null) footstepSource.volume = sfxVolume;
         if (climbSource != null) climbSource.volume = sfxVolume;
+        if (mirrorRotateSource != null) mirrorRotateSource.volume = sfxVolume;
         if (sfxSource != null) sfxSource.volume = sfxVolume;
         if (environmentSource != null) environmentSource.volume = musicVolume;
     }

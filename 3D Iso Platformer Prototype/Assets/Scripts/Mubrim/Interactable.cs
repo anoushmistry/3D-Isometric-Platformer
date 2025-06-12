@@ -23,29 +23,48 @@ public abstract class Interactable : MonoBehaviour
         mainCamera = Camera.main;
     }
 
+    /// <summary>
+    /// Shows prompt at default offset (center + upward + a bit toward camera).
+    /// </summary>
     public virtual void ShowPrompt()
-{
-    if (interactionPromptPrefab == null || currentPromptInstance != null)
-        return;
-
-    Vector3 spawnPosition = GetComponent<Collider>().bounds.center + Vector3.up * 1.5f;
-
-    if (mainCamera != null)
     {
-        Vector3 directionToCamera = (mainCamera.transform.position - spawnPosition).normalized;
-        spawnPosition += directionToCamera * 1f;
+        if (interactionPromptPrefab == null || currentPromptInstance != null)
+            return;
+
+        Vector3 spawnPosition = GetComponent<Collider>().bounds.center + Vector3.up * 1.5f;
+
+        if (mainCamera != null)
+        {
+            Vector3 directionToCamera = (mainCamera.transform.position - spawnPosition).normalized;
+            spawnPosition += directionToCamera * 1f;
+        }
+
+        CreatePrompt(spawnPosition);
     }
 
-    currentPromptInstance = Instantiate(interactionPromptPrefab, spawnPosition, Quaternion.identity);
-    interactionPromptPrefab.SetActive(true);
-
-    if (mainCamera != null)
+    /// <summary>
+    /// Shows prompt at a custom world position.
+    /// </summary>
+    public virtual void ShowPrompt(Vector3 customWorldPosition)
     {
-        Vector3 camEuler = mainCamera.transform.eulerAngles;
-        currentPromptInstance.transform.rotation = Quaternion.Euler(camEuler.x, camEuler.y, 0f);
-    }
-}
+        if (interactionPromptPrefab == null || currentPromptInstance != null)
+            return;
 
+        CreatePrompt(customWorldPosition);
+    }
+
+    private void CreatePrompt(Vector3 position)
+    {
+        currentPromptInstance = Instantiate(interactionPromptPrefab, position, Quaternion.identity);
+
+        if (mainCamera != null)
+        {
+            Vector3 camEuler = mainCamera.transform.eulerAngles;
+            currentPromptInstance.transform.rotation = Quaternion.Euler(camEuler.x, camEuler.y, 0f);
+        }
+
+        interactionPromptPrefab.SetActive(true);
+    }
 
     public virtual void HidePrompt()
     {
@@ -55,6 +74,7 @@ public abstract class Interactable : MonoBehaviour
             currentPromptInstance = null;
         }
     }
+
     public virtual bool IsInteractable()
     {
         return true;
