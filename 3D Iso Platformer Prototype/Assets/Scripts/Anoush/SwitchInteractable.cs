@@ -79,7 +79,7 @@ public class SwitchInteractable : Interactable
         isInInteractable = false; // Prevent interaction during motion
         HidePrompt();
 
-        SoundManager.Instance?.PlayLeverSFX();
+        SoundManager.Instance?.PlayLeverSFX(transform.position);
 
         Vector3 startPosition = switchHandle.localPosition;
         Vector3 endPosition = startPosition + switchOffset; // Adjust offset based on model

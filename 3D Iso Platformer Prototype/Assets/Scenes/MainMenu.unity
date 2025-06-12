@@ -853,9 +853,9 @@ MonoBehaviour:
   footstepSource: {fileID: 248602524}
   climbSource: {fileID: 1578181499}
   mainMenuClip: {fileID: 8300000, guid: 4a8fe4ea7a78ed146bb04b0264f916f9, type: 3}
-  tutorialClip: {fileID: 8300000, guid: 385d44e50febcd941bec5f9d0dc90d2c, type: 3}
+  tutorialClip: {fileID: 8300000, guid: 41e7f8f8d7cb0cb4da229deef7ad9858, type: 3}
   level1Clip: {fileID: 8300000, guid: 9e5cb34e2bc9c28458a0a2cc4613dcf8, type: 3}
-  level2Clip: {fileID: 8300000, guid: 9e5cb34e2bc9c28458a0a2cc4613dcf8, type: 3}
+  level2Clip: {fileID: 8300000, guid: f5a0806ad1d588f428707e5f6a50f232, type: 3}
 --- !u!4 &977396578
 Transform:
   m_ObjectHideFlags: 0

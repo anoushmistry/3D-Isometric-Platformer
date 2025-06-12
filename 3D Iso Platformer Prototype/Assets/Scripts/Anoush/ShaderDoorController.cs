@@ -207,6 +207,6 @@ public class ShaderDoorController : Interactable
     private IEnumerator PlayDoorSoundDelayed(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SoundManager.Instance?.PlayDoorBangSFX();
+        SoundManager.Instance?.PlayDoorBangSFX(transform.position);
     }
 }

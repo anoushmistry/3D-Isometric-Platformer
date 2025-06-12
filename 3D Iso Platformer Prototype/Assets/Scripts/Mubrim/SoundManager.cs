@@ -45,6 +45,7 @@ public class SoundManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+        musicVolume = 0.6f;
     }
 
     private void Start()
@@ -88,22 +89,22 @@ public class SoundManager : MonoBehaviour
         sfxSource.PlayOneShot(clip, sfxVolume);
     }
 
-    public void PlayLeverSFX()
+    public void PlayLeverSFX(Vector3 position)
     {
-        if (leverClip == null || sfxSource == null) return;
-        sfxSource.PlayOneShot(leverClip, sfxVolume);
+        if (leverClip == null) return;
+        AudioSource.PlayClipAtPoint(leverClip, position, sfxVolume);
     }
 
-    public void PlayGateDropSFX()
+    public void PlayGateDropSFX(Vector3 position)
     {
-        if (gateDropClip == null || sfxSource == null) return;
-        sfxSource.PlayOneShot(gateDropClip, sfxVolume);
+        if (gateDropClip == null) return;
+        AudioSource.PlayClipAtPoint(gateDropClip, position, sfxVolume);
     }
 
-    public void PlayDoorBangSFX()
+    public void PlayDoorBangSFX(Vector3 position)
     {
-        if (doorBangClip == null || sfxSource == null) return;
-        sfxSource.PlayOneShot(doorBangClip, sfxVolume);
+        if (doorBangClip == null) return;
+        AudioSource.PlayClipAtPoint(doorBangClip, position, sfxVolume);
     }
 
     public void PlayFootstepLoop()
@@ -157,7 +158,7 @@ public class SoundManager : MonoBehaviour
         sfxSource.PlayOneShot(orbPlaceClip, sfxVolume);
     }
 
-    public void PlayFallingTreeSFX() // 🔊 New Method
+    public void PlayFallingTreeSFX() 
     {
         if (fallingTreeClip == null || sfxSource == null) return;
         sfxSource.PlayOneShot(fallingTreeClip, sfxVolume);
