@@ -192,6 +192,7 @@ public class PlayerMovement : MonoBehaviour
         isOnLadder = true;
         isClimbing = true;
         LockInput = true;
+        SoundManager.Instance?.StopFootstepLoop();
         velocity = Vector3.zero;
 
         controller.enabled = false;

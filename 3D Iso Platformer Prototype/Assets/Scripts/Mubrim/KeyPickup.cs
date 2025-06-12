@@ -7,6 +7,7 @@ public class KeyPickup : Interactable
         HidePrompt();
         PlayerInventory.Instance.PickupKey();
         KeyUIController.Instance.ShowKeyIcon();
+        SoundManager.Instance?.PlayKeyPickupSFX();
         Destroy(gameObject); 
     }
 }

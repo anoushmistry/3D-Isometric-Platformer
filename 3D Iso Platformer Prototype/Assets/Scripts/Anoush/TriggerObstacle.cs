@@ -7,7 +7,7 @@ public class TriggerObstacle : MonoBehaviour
     [SerializeField] private MeshCollider collider;
     [SerializeField] private Quaternion rotationToApply;
     [SerializeField] private Cinemachine.CinemachineImpulseSource impulseSource;
-    [SerializeField] private float duration = 6f; 
+    [SerializeField] private float duration = 6f;
 
     private bool isObstacleTriggered;
 
@@ -32,9 +32,10 @@ public class TriggerObstacle : MonoBehaviour
 
     private IEnumerator SmoothRotateObstacle(Quaternion targetRotation, float duration)
     {
-        yield return new WaitForSeconds(1f); 
+        yield return new WaitForSeconds(1f); // Optional delay before animation starts
 
-        SoundManager.Instance?.PlayFallingTreeSFX();
+        // Delay the sound separately
+        StartCoroutine(DelayedFallingTreeSound(1.5f));
 
         Quaternion startRotation = obstacle.rotation;
         float elapsed = 0f;
@@ -43,13 +44,19 @@ public class TriggerObstacle : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-            float easedT = Mathf.SmoothStep(0, 1, t); // Smooth easing
+            float easedT = Mathf.SmoothStep(0, 1, t);
             obstacle.rotation = Quaternion.Lerp(startRotation, targetRotation, easedT);
             yield return null;
         }
 
         obstacle.rotation = targetRotation;
         collider.convex = true;
-        impulseSource.GenerateImpulse(); // Shake camera
+        impulseSource.GenerateImpulse(); // Camera shake
+    }
+
+    private IEnumerator DelayedFallingTreeSound(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SoundManager.Instance?.PlayFallingTreeSFX();
     }
 }

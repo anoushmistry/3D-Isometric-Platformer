@@ -89,15 +89,25 @@ public class PlayerInteraction : MonoBehaviour
     {
         mirrorRotationCooldown -= Time.deltaTime;
 
+        bool rotating = false;
+
         if (mirrorRotationCooldown <= 0f && currentMirror != null)
         {
             float rotationDir = 0f;
             if (Input.GetKey(KeyCode.Q)) rotationDir = -1f;
             if (Input.GetKey(KeyCode.R)) rotationDir = 1f;
 
+            rotating = rotationDir != 0f;
+
             if (rotationDir != 0f)
                 currentMirror.RotateMirror(rotationDir);
         }
+
+        // Handle looping sound
+        if (rotating)
+            SoundManager.Instance?.PlayMirrorRotateLoop();
+        else
+            SoundManager.Instance?.StopMirrorRotateLoop();
 
         if (Input.GetKeyDown(KeyCode.E))
             ExitMirrorRotationMode();
@@ -117,7 +127,16 @@ public class PlayerInteraction : MonoBehaviour
             if (collider.TryGetComponent(out Interactable interactable) && interactable.IsInteractable())
             {
                 nearbyInteractable = interactable;
-                nearbyInteractable.ShowPrompt();
+                if (interactable.CompareTag("Ladder"))
+                {
+                    Vector3 camForward = Camera.main.transform.forward;
+                    Vector3 offsetPosition = interactable.transform.position + (camForward.normalized * -2f);
+                    interactable.ShowPrompt(offsetPosition); 
+                }
+                else
+                {
+                    nearbyInteractable.ShowPrompt();
+                }
                 break;
             }
         }

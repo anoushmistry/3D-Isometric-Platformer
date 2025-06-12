@@ -1,11 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 
 public class ButtonSwitch : Interactable
 {
-    public PlatformController platformController;  
-    public bool isGroundSwitch;   
-    public Transform switchButton; 
+    public PlatformController platformController;
+    public bool isGroundSwitch;
+    public Transform switchButton;
     public float pressDepth = 0.1f;
     public float pressDuration = 0.2f;
 
@@ -20,6 +20,10 @@ public class ButtonSwitch : Interactable
     {
         AnimatePress();
 
+        // 🔊 Play lever sound
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayLeverSFX(transform.position);
+
         if (isGroundSwitch)
         {
             if (platformController.IsPlatformUp())
@@ -29,7 +33,6 @@ public class ButtonSwitch : Interactable
         }
         else
         {
-            // If platform is down, pressing platform switch moves it up
             if (!platformController.IsPlatformUp())
             {
                 platformController.MovePlatformUp();
