@@ -7,7 +7,7 @@ public class TriggerObstacle : MonoBehaviour
     [SerializeField] private MeshCollider collider;
     [SerializeField] private Quaternion rotationToApply;
     [SerializeField] private Cinemachine.CinemachineImpulseSource impulseSource;
-    [SerializeField] private float duration = 3f; // Set this higher for a slower fall
+    [SerializeField] private float duration = 6f; 
 
     private bool isObstacleTriggered;
 
@@ -32,7 +32,7 @@ public class TriggerObstacle : MonoBehaviour
 
     private IEnumerator SmoothRotateObstacle(Quaternion targetRotation, float duration)
     {
-        yield return new WaitForSeconds(1f); // Delay to allow camera blend
+        yield return new WaitForSeconds(1f); 
 
         SoundManager.Instance?.PlayFallingTreeSFX();
 

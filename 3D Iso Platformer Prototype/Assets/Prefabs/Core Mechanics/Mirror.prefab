@@ -122,6 +122,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d53a1df1e64b4c4bbbf07de1990b24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptMessage: Press E to interact
+  interactionPromptPrefab: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+    type: 3}
+  rotationSpeed: 60
+  isObjective1Mirror: 0
+  isObjective2Mirror: 0
 --- !u!1 &2782417754478764356
 GameObject:
   m_ObjectHideFlags: 0
