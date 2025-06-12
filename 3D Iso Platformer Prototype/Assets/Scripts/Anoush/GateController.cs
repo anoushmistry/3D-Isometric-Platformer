@@ -24,7 +24,7 @@ public class GateController : MonoBehaviour
     {
         if (SoundManager.Instance != null)
         {
-            SoundManager.Instance?.PlayGateDropSFX();
+            SoundManager.Instance?.PlayGateDropSFX(transform.position);
         }
 
         Vector3 targetPosition = initialPosition + loweredPositionOffset;
