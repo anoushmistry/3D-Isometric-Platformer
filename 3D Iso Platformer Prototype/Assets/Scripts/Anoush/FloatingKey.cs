@@ -12,7 +12,7 @@ public class FloatingKey : MonoBehaviour
     [Header("Activation")]
     public KeyCode activateKey = KeyCode.R;
 
-    private bool isAnimating = false;
+    private bool isAnimating = true;
     private Vector3 startPos;
 
     private void Start()
@@ -22,11 +22,6 @@ public class FloatingKey : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(activateKey))
-        {
-            isAnimating = !isAnimating;
-        }
-
         if (isAnimating)
         {
             Animate();

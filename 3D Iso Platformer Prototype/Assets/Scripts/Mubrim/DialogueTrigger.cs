@@ -11,11 +11,12 @@ public class DialogueTrigger : Interactable
             return;
 
        DialogueManager.Instance.StartDialogue(dialogue.sentences, OnDialogueFinished);
+       hasInteracted = true;
     }
+
 
     private void OnDialogueFinished()
     {
-        hasInteracted = true;
         HidePrompt();
     }
 

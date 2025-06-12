@@ -101,8 +101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gateObject: {fileID: 922431376327663834}
-  loweredPositionOffset: {x: 0, y: -5.5, z: 0}
-  dropDuration: 1
+  loweredPositionOffset: {x: 0, y: -7.5, z: 0}
+  dropDuration: 7
 --- !u!65 &8357031316778278474
 BoxCollider:
   m_ObjectHideFlags: 0
