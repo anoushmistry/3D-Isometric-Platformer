@@ -114,11 +114,14 @@ public class PlayerMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
         }
-        if (LockInput)
+        else
         {
+            horizontal = 0f;
+            vertical = 0f;
             animator.SetFloat("Speed", 0f);
         }
     }
+
 
     void HandleMovement()
     {
@@ -154,20 +157,16 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, angle, 0);
         }
 
-        bool isWalking = isoMoveDirection.magnitude > 0.1f && isGrounded;
+        bool isWalking = isoMoveDirection.magnitude > 0.1f && isGrounded && !LockInput;
 
         if (SoundManager.Instance != null)
         {
             if (isWalking)
-            {
                 SoundManager.Instance.PlayFootstepLoop();
-            }
             else
-            {
                 SoundManager.Instance.StopFootstepLoop();
-            }
-
         }
+
     }
 
     void GroundCheck()

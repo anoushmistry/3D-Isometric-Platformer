@@ -389,7 +389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   promptMessage: Press E to interact
-  interactionPromptPrefab: {fileID: 8056783600279311869, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
+  interactionPromptPrefab: {fileID: 9116924371498282217, guid: 8bdb6a484c928ad45afcb5d5fdc9fd0e,
     type: 3}
   switchHandle: {fileID: 8875133203823752929}
   pushDownSpeed: 0

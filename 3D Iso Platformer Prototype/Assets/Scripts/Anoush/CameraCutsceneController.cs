@@ -53,6 +53,7 @@ public class CameraCutsceneController : MonoBehaviour
     private IEnumerator FocusDoorAndReturn()
     {
         PlayerMovement.Instance.LockInput = true;
+        SoundManager.Instance?.StopFootstepLoop();
         // Focus on the door
         vcam_Door.Priority = 20;
         vcam_Player.Priority = 10;
@@ -69,6 +70,7 @@ public class CameraCutsceneController : MonoBehaviour
     private IEnumerator FocusObstacleAndReturn()
     {
         PlayerMovement.Instance.LockInput = true;
+        SoundManager.Instance?.StopFootstepLoop();
         // Focus on the door
         vcam_Obstacle.Priority = 20;
         vcam_Player.Priority = 10;
