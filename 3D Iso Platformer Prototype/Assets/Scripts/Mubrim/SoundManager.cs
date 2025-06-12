@@ -30,7 +30,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("Scene Clips")]
     public AudioClip mainMenuClip;
-    public AudioClip tutorialClip;
+    //public AudioClip tutorialClip;
     public AudioClip level1Clip;
     public AudioClip level2Clip;
 
@@ -66,7 +66,7 @@ public class SoundManager : MonoBehaviour
         AudioClip clipToPlay = sceneName switch
         {
             "MainMenu" => mainMenuClip,
-            "Tutorial Level" => tutorialClip,
+           // "Tutorial Level" => tutorialClip,
             "Level 1 Prototype" => level1Clip,
             "Level 2 Prototype" => level2Clip,
             _ => null

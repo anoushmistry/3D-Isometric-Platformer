@@ -30,8 +30,6 @@ public class LightReceiver : MonoBehaviour
     {
         float elapsed = 0f;
 
-        material.EnableKeyword("_EMISSION");
-
         while (elapsed < duration)
         {
             float t = elapsed / duration;
