@@ -156,13 +156,17 @@ public class PlayerMovement : MonoBehaviour
 
         bool isWalking = isoMoveDirection.magnitude > 0.1f && isGrounded;
 
-        if (isWalking)
+        if (SoundManager.Instance != null)
         {
-            SoundManager.Instance.PlayFootstepLoop();
-        }
-        else
-        {
-            SoundManager.Instance.StopFootstepLoop();
+            if (isWalking)
+            {
+                SoundManager.Instance.PlayFootstepLoop();
+            }
+            else
+            {
+                SoundManager.Instance.StopFootstepLoop();
+            }
+
         }
     }
 

@@ -22,7 +22,10 @@ public class GateController : MonoBehaviour
 
     private IEnumerator DropGateCoroutine()
     {
-        SoundManager.Instance?.PlayGateDropSFX();
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance?.PlayGateDropSFX();
+        }
 
         Vector3 targetPosition = initialPosition + loweredPositionOffset;
         Vector3 startPosition = gateObject.position;

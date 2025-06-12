@@ -90,6 +90,10 @@ public class SwitchInteractable : Interactable
         {
             switchAudioSource.PlayOneShot(switchSound);
         }
+        //SoundManager.Instance.PlayLeverSFX();
+
+        //float delay = SoundManager.Instance.leverClip != null ? SoundManager.Instance.leverClip.length : 0.2f;
+        // yield return new WaitForSeconds(delay);
 
         Vector3 startPosition = switchHandle.localPosition;
         Vector3 endPosition = startPosition + switchOffset; // Adjust offset based on model
