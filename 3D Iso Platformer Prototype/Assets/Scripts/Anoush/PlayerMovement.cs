@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public static PlayerMovement Instance;
 
     [Header("Player Movement Settings")]
+    [SerializeField] private bool canJump = false;
     [SerializeField] private float speed = 5f;
     [SerializeField] private CharacterController controller;
     [SerializeField] private float gravity = -9.81f;
@@ -140,8 +141,8 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f;
         else
             velocity.y += gravity * mass * Time.deltaTime;
-
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space) && canJump)
             velocity.y += Mathf.Sqrt(2 * jumpHeight * -gravity) * mass;
 
         Vector3 movement = isoMoveDirection * speed * Time.deltaTime;
